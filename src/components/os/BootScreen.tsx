@@ -64,12 +64,13 @@ export function BootScreen() {
   useEffect(() => {
     const replay = () => {
       document.documentElement.removeAttribute("data-booted");
+      setBootDone(false); // le retour à true redéclenche le son de démarrage
       setStep(0);
       setPhase("running");
     };
     window.addEventListener(REPLAY_BOOT_EVENT, replay);
     return () => window.removeEventListener(REPLAY_BOOT_EVENT, replay);
-  }, []);
+  }, [setBootDone]);
 
   // Déroulé des lignes de log.
   useEffect(() => {

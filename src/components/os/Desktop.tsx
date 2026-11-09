@@ -8,6 +8,7 @@ import { useDesktopStore } from "@/stores/desktop-store";
 import { BootScreen } from "./BootScreen";
 import { DesktopIcon } from "./DesktopIcon";
 import { DesktopWidgets } from "./DesktopWidgets";
+import { SoundEffects } from "./SoundEffects";
 import { SystemErrorDialog } from "./SystemErrorDialog";
 import { Taskbar } from "./Taskbar";
 import { ThemeSync } from "./ThemeSync";
@@ -47,6 +48,7 @@ export function Desktop({ githubWidget }: { githubWidget?: ReactNode }) {
   return (
     <main className="relative flex h-full flex-col">
       <ThemeSync />
+      <SoundEffects />
       <Wallpaper />
 
       {/* Zone du bureau ; `isolate` confine les z-index des fenêtres à cette zone. */}

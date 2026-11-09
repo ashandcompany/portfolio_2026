@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { toast } from "sonner";
 import { REPLAY_BOOT_EVENT } from "@/components/os/BootScreen";
 import { PixelButton } from "@/components/ui/PixelButton";
+import { playSound } from "@/lib/sounds";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { cn } from "@/lib/utils";
 import { useDesktopStore } from "@/stores/desktop-store";
@@ -74,7 +75,15 @@ export function SettingsApp() {
           <p className="text-sm text-fg-muted">
             Petits sons d&apos;interface (clics, ouverture de fenêtres).
           </p>
-          <PixelButton size="sm" onClick={toggleSound} aria-pressed={soundEnabled}>
+          <PixelButton
+            size="sm"
+            onClick={() => {
+              // Petit « ding » de confirmation à l'activation.
+              if (!soundEnabled) playSound("enable", { force: true });
+              toggleSound();
+            }}
+            aria-pressed={soundEnabled}
+          >
             {soundEnabled ? <Volume2 className="size-4" aria-hidden /> : <VolumeX className="size-4" aria-hidden />}
             {soundEnabled ? "Activés" : "Coupés"}
           </PixelButton>

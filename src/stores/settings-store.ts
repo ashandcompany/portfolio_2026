@@ -12,7 +12,7 @@ export const BOOT_SEEN_KEY = "emma-os:boot-seen";
 interface SettingsState {
   theme: ThemeChoice;
   wallpaper: WallpaperChoice;
-  /** Sons d'interface (branchés au lot 6). Coupés par défaut. */
+  /** Sons d'interface (voir lib/sounds et os/SoundEffects). Coupés par défaut. */
   soundEnabled: boolean;
   setTheme: (theme: ThemeChoice) => void;
   setWallpaper: (wallpaper: WallpaperChoice) => void;
