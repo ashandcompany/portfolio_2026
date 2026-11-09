@@ -1,11 +1,32 @@
-import { FolderHeart, Heart, UserRound, type LucideIcon } from "lucide-react";
+import {
+  BriefcaseBusiness,
+  CodeXml,
+  FileText,
+  FolderHeart,
+  GraduationCap,
+  Heart,
+  Mail,
+  Trash2,
+  UserRound,
+  type LucideIcon,
+} from "lucide-react";
 
 /**
  * Registre des applications d'Emma OS (métadonnées uniquement).
  * Le composant de chaque app est associé dans `components/apps/index.tsx`,
  * ce qui évite que le store dépende des composants React.
+ * Ajouter une app = une entrée ici + son composant.
  */
-export type AppId = "welcome" | "about" | "projects";
+export type AppId =
+  | "welcome"
+  | "about"
+  | "projects"
+  | "experience"
+  | "education"
+  | "skills"
+  | "cv"
+  | "contact"
+  | "trash";
 
 export interface Size {
   width: number;
@@ -17,9 +38,15 @@ export interface AppMeta {
   title: string;
   /** Nom de « fichier » affiché dans la barre de titre (ex. about_me.txt). */
   fileName: string;
+  /** Courte description affichée dans le menu démarrer. */
+  description: string;
+  /** Mots-clés supplémentaires pour la recherche du menu démarrer. */
+  keywords: string[];
   icon: LucideIcon;
   /** Classe Tailwind pour colorer l'icône (fill + stroke). */
   iconClassName: string;
+  /** Affichée en icône sur le bureau. */
+  onDesktop: boolean;
   defaultSize: Size;
   minSize: Size;
 }
@@ -29,8 +56,11 @@ export const APPS: Record<AppId, AppMeta> = {
     id: "welcome",
     title: "Bienvenue",
     fileName: "bienvenue.exe",
+    description: "Le point de départ",
+    keywords: ["accueil", "welcome", "home"],
     icon: Heart,
     iconClassName: "fill-bubblegum-300 text-plum-700",
+    onDesktop: false,
     defaultSize: { width: 440, height: 340 },
     minSize: { width: 300, height: 220 },
   },
@@ -38,8 +68,11 @@ export const APPS: Record<AppId, AppMeta> = {
     id: "about",
     title: "About Me",
     fileName: "about_me.txt",
+    description: "Qui je suis",
+    keywords: ["à propos", "présentation", "profil", "bio"],
     icon: UserRound,
     iconClassName: "fill-lavender-200 text-plum-700",
+    onDesktop: true,
     defaultSize: { width: 520, height: 400 },
     minSize: { width: 320, height: 240 },
   },
@@ -47,11 +80,100 @@ export const APPS: Record<AppId, AppMeta> = {
     id: "projects",
     title: "Projects",
     fileName: "projets",
+    description: "Mes réalisations",
+    keywords: ["projets", "réalisations", "portfolio", "github"],
     icon: FolderHeart,
     iconClassName: "fill-folder text-plum-700",
-    defaultSize: { width: 640, height: 440 },
+    onDesktop: true,
+    defaultSize: { width: 680, height: 460 },
     minSize: { width: 360, height: 260 },
+  },
+  experience: {
+    id: "experience",
+    title: "Experience",
+    fileName: "experiences",
+    description: "Mon parcours pro",
+    keywords: ["expériences", "travail", "stage", "alternance", "emploi"],
+    icon: BriefcaseBusiness,
+    iconClassName: "fill-bubblegum-200 text-plum-700",
+    onDesktop: true,
+    defaultSize: { width: 560, height: 440 },
+    minSize: { width: 340, height: 260 },
+  },
+  education: {
+    id: "education",
+    title: "Education",
+    fileName: "formation",
+    description: "Diplômes et formations",
+    keywords: ["formation", "école", "diplôme", "études"],
+    icon: GraduationCap,
+    iconClassName: "fill-sky-pastel-300 text-plum-700",
+    onDesktop: true,
+    defaultSize: { width: 540, height: 420 },
+    minSize: { width: 340, height: 260 },
+  },
+  skills: {
+    id: "skills",
+    title: "Skills",
+    fileName: "skills.exe",
+    description: "Ma stack technique",
+    keywords: ["compétences", "technos", "stack", "langages"],
+    icon: CodeXml,
+    iconClassName: "fill-mint-200 text-plum-700",
+    onDesktop: true,
+    defaultSize: { width: 520, height: 420 },
+    minSize: { width: 320, height: 260 },
+  },
+  cv: {
+    id: "cv",
+    title: "My CV",
+    fileName: "cv_emma.pdf",
+    description: "Mon CV en PDF",
+    keywords: ["cv", "resume", "curriculum", "pdf", "télécharger"],
+    icon: FileText,
+    iconClassName: "fill-cream text-plum-700",
+    onDesktop: true,
+    defaultSize: { width: 600, height: 560 },
+    minSize: { width: 340, height: 300 },
+  },
+  contact: {
+    id: "contact",
+    title: "Contact",
+    fileName: "contact.mail",
+    description: "M'écrire",
+    keywords: ["email", "mail", "linkedin", "contacter", "message"],
+    icon: Mail,
+    iconClassName: "fill-butter-200 text-plum-700",
+    onDesktop: true,
+    defaultSize: { width: 480, height: 400 },
+    minSize: { width: 320, height: 260 },
+  },
+  trash: {
+    id: "trash",
+    title: "Corbeille",
+    fileName: "corbeille",
+    description: "Ne regarde pas dedans…",
+    keywords: ["trash", "poubelle", "bugs"],
+    icon: Trash2,
+    iconClassName: "fill-lavender-100 text-plum-700",
+    onDesktop: true,
+    defaultSize: { width: 420, height: 300 },
+    minSize: { width: 300, height: 220 },
   },
 };
 
 export const APP_LIST: AppMeta[] = Object.values(APPS);
+export const DESKTOP_APPS: AppMeta[] = APP_LIST.filter((app) => app.onDesktop);
+
+/** Recherche insensible à la casse et aux accents (titre, fichier, description, mots-clés). */
+export function searchApps(query: string): AppMeta[] {
+  const normalize = (s: string) =>
+    s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+  const q = normalize(query);
+  if (!q) return APP_LIST;
+  return APP_LIST.filter((app) =>
+    [app.title, app.fileName, app.description, ...app.keywords].some((field) =>
+      normalize(field).includes(q),
+    ),
+  );
+}

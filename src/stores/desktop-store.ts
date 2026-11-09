@@ -24,7 +24,11 @@ interface DesktopState {
   topZ: number;
   /** Taille de la zone du bureau (hors barre des tâches), mise à jour par le WindowManager. */
   viewport: Size;
+  /** Menu démarrer ouvert (non sauvegardé). */
+  startMenuOpen: boolean;
 
+  setStartMenuOpen: (open: boolean) => void;
+  /** Ouvre une app (ou la remet au premier plan) et ferme le menu démarrer. */
   open: (id: AppId) => void;
   close: (id: AppId) => void;
   minimize: (id: AppId) => void;
@@ -86,6 +90,9 @@ export const useDesktopStore = create<DesktopState>()(
         activeId: null,
         topZ: 10,
         viewport: { width: 0, height: 0 },
+        startMenuOpen: false,
+
+        setStartMenuOpen: (startMenuOpen) => set({ startMenuOpen }),
 
         open: (id) =>
           set((state) => {
@@ -93,6 +100,7 @@ export const useDesktopStore = create<DesktopState>()(
             const existing = state.windows[id];
             if (existing?.isOpen) {
               return {
+                startMenuOpen: false,
                 topZ: z,
                 activeId: id,
                 windows: { ...state.windows, [id]: { ...existing, isMinimized: false, zIndex: z } },
@@ -112,6 +120,7 @@ export const useDesktopStore = create<DesktopState>()(
               position: { x: CASCADE_START.x + offset, y: CASCADE_START.y + offset },
             };
             return {
+              startMenuOpen: false,
               topZ: z,
               activeId: id,
               windows: { ...state.windows, [id]: fitWindow(base, state.viewport) },
