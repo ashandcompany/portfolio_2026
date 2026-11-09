@@ -1,26 +1,175 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ═══════════════════════ Emma OS — design tokens ═══════════════════════
+ * Direction : hybride « pixel cozy » — identité pixel (police, étoiles,
+ * rayures, ombres décalées) + finitions douces (petits arrondis, bordures
+ * lavande, ombres translucides).
+ *
+ * Règles d'usage :
+ *  - Lavande = couleur dominante, crème = surfaces, bubblegum = signature.
+ *  - Mint / butter / sky = accents ponctuels uniquement.
+ *  - Texte : toujours plum-900 ou plum-700 ; plum-500 pour le secondaire.
+ *    plum-400 jamais pour du texte courant (contraste insuffisant).
+ *  - Dans les composants, préférer les tokens sémantiques (bg-window,
+ *    text-fg…) aux couleurs brutes : le thème sombre (lot 5) n'aura qu'à
+ *    les redéfinir.
+ * ════════════════════════════════════════════════════════════════════════ */
+@theme {
+  /* ── Palette brute ── */
+  --color-lavender-50: #f7f3ff;
+  --color-lavender-100: #ede5ff;
+  --color-lavender-200: #ddd0fb;
+  --color-lavender-300: #c9b6f2;
+  --color-lavender-400: #b39be8;
+  --color-lavender-500: #9a7fd9;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-bubblegum-100: #ffe6f1;
+  --color-bubblegum-200: #fdd0e4;
+  --color-bubblegum-300: #f7b8d2;
+  --color-bubblegum-400: #f193bd;
+  --color-bubblegum-500: #e46fa4;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --color-sky-pastel-100: #e6f1fc;
+  --color-sky-pastel-200: #d2e6f9;
+  --color-sky-pastel-300: #bcd8f5;
+  --color-sky-pastel-400: #95c0ee;
+
+  --color-mint-200: #c9f0e0;
+  --color-mint-300: #a6e3cb;
+  --color-butter-200: #fff1c2;
+  --color-butter-300: #ffe08f;
+  --color-raspberry-500: #c93a62;
+
+  --color-cream: #fffaf5;
+  --color-plum-400: #a58cc4; /* bordures, désactivé — pas pour du texte */
+  --color-plum-500: #7a5c9e; /* texte secondaire (≈ 5,3:1 sur crème) */
+  --color-plum-700: #4b3566;
+  --color-plum-900: #2e1f42;
+
+  /* ── Tokens sémantiques ── */
+  /* Bureau */
+  --color-desktop: var(--color-lavender-50);
+  --color-taskbar: var(--color-plum-900);
+  --color-taskbar-fg: var(--color-cream);
+  --color-taskbar-hover: var(--color-plum-700);
+
+  /* Fenêtres */
+  --color-window: var(--color-cream);
+  --color-window-border: var(--color-lavender-400);
+  --color-titlebar: var(--color-lavender-100);
+  --color-titlebar-active: var(--color-lavender-200);
+
+  /* Typographie */
+  --color-fg: var(--color-plum-900);
+  --color-fg-muted: var(--color-plum-500);
+  --color-fg-subtle: var(--color-plum-400);
+
+  /* Interactif */
+  --color-accent: var(--color-lavender-500); /* texte plum-900 dessus (≈ 4,6:1) */
+  --color-accent-hover: var(--color-lavender-400);
+  --color-accent-fg: var(--color-plum-900);
+  --color-signature: var(--color-bubblegum-300);
+  --color-signature-hover: var(--color-bubblegum-200);
+  --color-surface: var(--color-lavender-50);
+  --color-surface-hover: var(--color-lavender-100);
+  --color-control-border: var(--color-plum-500);
+  --color-folder: var(--color-butter-300);
+
+  /* États */
+  --color-success: var(--color-mint-300);
+  --color-warning: var(--color-butter-300);
+  --color-danger: var(--color-raspberry-500); /* texte blanc dessus (≈ 4,9:1) */
+  --color-info: var(--color-sky-pastel-400);
+
+  /* ── Polices ── */
+  --font-pixel: var(--font-pixelify), "VT323", ui-monospace, monospace;
+  --font-body: var(--font-nunito), ui-rounded, system-ui, sans-serif;
+  --font-sans: var(--font-body);
+
+  /* ── Arrondis (discrets pour rester rétro) ── */
+  --radius-control: 4px;
+  --radius-window: 6px;
+
+  /* ── Ombres : décalage pixel, mais translucide ── */
+  --shadow-pixel-sm: 2px 2px 0 0 rgb(75 53 102 / 0.25);
+  --shadow-pixel: 4px 4px 0 0 rgb(75 53 102 / 0.22);
+  --shadow-window: 4px 4px 0 0 rgb(122 92 158 / 0.28), 0 12px 32px -12px rgb(122 92 158 / 0.45);
+  /* Relief léger des boutons (enfoncé au clic) */
+  --shadow-bevel: inset 0 -2px 0 0 rgb(75 53 102 / 0.18), inset 0 2px 0 0 rgb(255 255 255 / 0.6);
+  --shadow-bevel-pressed: inset 0 2px 0 0 rgb(75 53 102 / 0.18);
+
+  /* ── Animations ── */
+  --animate-twinkle: twinkle 3s ease-in-out infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-drift: drift 60s linear infinite;
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.35; transform: scale(0.85); }
+    50% { opacity: 1; transform: scale(1.1); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  @keyframes drift {
+    from { transform: translateX(-10%); }
+    to { transform: translateX(110vw); }
   }
 }
 
+/* ───────────────────────── Base ───────────────────────── */
+:root {
+  color-scheme: light;
+}
+
+html,
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  height: 100%;
+}
+
+body {
+  background: var(--color-desktop);
+  color: var(--color-fg);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-signature);
+  color: var(--color-fg);
+}
+
+:focus-visible {
+  outline: 2px dashed var(--color-bubblegum-500);
+  outline-offset: 2px;
+}
+
+/* ───────────────────────── Utilitaires ───────────────────────── */
+@utility pixelated {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+@utility font-pixel {
+  font-family: var(--font-pixel);
+  letter-spacing: 0.02em;
+}
+
+/* Rayures de barre de titre façon fenêtre rétro */
+@utility title-stripes {
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent 0 3px,
+    rgb(255 255 255 / 0.45) 3px 4px
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
