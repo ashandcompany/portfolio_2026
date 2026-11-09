@@ -1,6 +1,7 @@
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
 import { Nunito, Pixelify_Sans } from "next/font/google";
+import { profile } from "@/data/profile";
 import "./globals.css";
 
 const pixelify = Pixelify_Sans({
@@ -14,10 +15,25 @@ const nunito = Nunito({
   subsets: ["latin"],
 });
 
+const siteTitle = `${profile.fullName} · ${profile.role}`;
+const siteDescription =
+  "Portfolio d'Emma Roizot, développeuse web fullstack, en forme de bureau d'ordinateur pastel : projets, expériences, formation et contact.";
+
+/** Icônes : favicon.ico, icon.svg et apple-icon.png dans ce dossier (pixel art « E »). */
 export const metadata: Metadata = {
-  title: "Emma OS — Portfolio de développeuse Fullstack",
-  description:
-    "Bienvenue sur Emma OS : un portfolio en forme de bureau d'ordinateur pastel. Projets, expériences, formation et contact.",
+  // Le nom en premier : c'est ce qu'on lit dans un onglet étroit.
+  title: { default: siteTitle, template: `%s · ${profile.fullName}` },
+  description: siteDescription,
+  applicationName: "Emma OS",
+  authors: [{ name: profile.fullName, url: profile.links.linkedin }],
+  appleWebApp: { title: "Emma OS" },
+  openGraph: {
+    type: "website",
+    locale: "fr_FR",
+    siteName: "Emma OS",
+    title: siteTitle,
+    description: siteDescription,
+  },
 };
 
 export const viewport: Viewport = {
