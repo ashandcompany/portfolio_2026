@@ -56,6 +56,7 @@ function StartMenuPanel({ anchorRef }: StartMenuProps) {
     };
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
+        e.preventDefault(); // Échap ferme le menu, pas la fenêtre active derrière
         setStartMenuOpen(false);
         anchorRef.current?.focus();
       }

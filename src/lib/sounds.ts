@@ -6,7 +6,16 @@ import { useSettingsStore } from "@/stores/settings-store";
  * Le navigateur n'autorise l'audio qu'après une interaction (clic, touche) : avant ça,
  * les sons sont simplement ignorés.
  */
-export type SoundName = "open" | "close" | "minimize" | "maximize" | "click" | "error" | "boot" | "enable";
+export type SoundName =
+  | "open"
+  | "close"
+  | "minimize"
+  | "maximize"
+  | "click"
+  | "error"
+  | "boot"
+  | "enable"
+  | "notify";
 
 interface Note {
   /** Fréquence de départ (Hz). */
@@ -48,6 +57,10 @@ const SOUNDS: Record<SoundName, Note[]> = {
     { freq: 659, dur: 0.07, type: "triangle" },
     { freq: 988, at: 0.07, dur: 0.14, type: "triangle" },
   ],
+  notify: [
+    { freq: 1319, dur: 0.08, type: "sine", gain: 1.4 },
+    { freq: 1047, at: 0.09, dur: 0.16, type: "sine", gain: 1.4 },
+  ],
 };
 
 /** Volume général, volontairement discret. */
@@ -59,6 +72,13 @@ function getContext(): AudioContext | null {
   if (typeof window === "undefined" || !("AudioContext" in window)) return null;
   context ??= new AudioContext();
   return context;
+}
+
+/** Active / coupe les sons, avec un petit « ding » de confirmation à l'activation. */
+export function toggleSoundWithFeedback() {
+  const { soundEnabled, toggleSound } = useSettingsStore.getState();
+  if (!soundEnabled) playSound("enable", { force: true });
+  toggleSound();
 }
 
 /** Joue un son d'interface si les sons sont activés. `force` ignore le réglage (aperçu). */

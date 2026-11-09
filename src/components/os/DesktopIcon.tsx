@@ -25,6 +25,7 @@ export function DesktopIcon({ app, selected, onSelect }: DesktopIconProps) {
     <button
       type="button"
       data-desktop-icon
+      data-app-id={app.id}
       onPointerDown={(e) => {
         pointerType.current = e.pointerType;
         onSelect();

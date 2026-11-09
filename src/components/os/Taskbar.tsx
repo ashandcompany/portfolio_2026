@@ -4,6 +4,7 @@ import { Moon, Sparkles, Sun, Volume2, VolumeX } from "lucide-react";
 import { useRef, useSyncExternalStore } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { APPS, type AppId } from "@/data/apps";
+import { toggleSoundWithFeedback } from "@/lib/sounds";
 import { cn } from "@/lib/utils";
 import { AppIcon } from "@/components/ui/AppIcon";
 import { useDesktopStore } from "@/stores/desktop-store";
@@ -96,7 +97,7 @@ function TaskbarWindows() {
 }
 
 /** Bascule rapide clair ↔ sombre (le choix « système » se fait dans les Paramètres). */
-function ThemeToggle() {
+export function ThemeToggle() {
   const setTheme = useSettingsStore((s) => s.setTheme);
   // Thème réellement affiché (lu sur <html>) : gère aussi le choix « système ».
   const isDark = useSyncExternalStore(
@@ -125,15 +126,14 @@ function subscribeTheme(callback: () => void) {
   return () => observer.disconnect();
 }
 
-function SoundToggle() {
+export function SoundToggle() {
   const soundEnabled = useSettingsStore((s) => s.soundEnabled);
-  const toggleSound = useSettingsStore((s) => s.toggleSound);
   const Icon = soundEnabled ? Volume2 : VolumeX;
 
   return (
     <button
       type="button"
-      onClick={toggleSound}
+      onClick={toggleSoundWithFeedback}
       aria-pressed={soundEnabled}
       aria-label={soundEnabled ? "Couper les sons" : "Activer les sons"}
       title={soundEnabled ? "Couper les sons" : "Activer les sons"}

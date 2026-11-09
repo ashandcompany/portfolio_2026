@@ -1,6 +1,7 @@
 "use client";
 
 import { Sparkles } from "lucide-react";
+import Link from "next/link";
 import { profile } from "@/data/profile";
 import { PixelButton } from "@/components/ui/PixelButton";
 import { Tag } from "@/components/ui/Tag";
@@ -27,7 +28,13 @@ export function WelcomeApp() {
         <Tag color="mint">Docker</Tag>
         <Tag color="butter">MySQL</Tag>
       </div>
-      <div className="flex flex-wrap justify-end gap-2 pt-2">
+      <div className="flex flex-wrap items-center justify-end gap-2 pt-2">
+        <Link
+          href="/cv"
+          className="mr-auto text-xs text-fg-muted underline underline-offset-2 hover:text-fg"
+        >
+          Pressé·e ? Version simple →
+        </Link>
         <PixelButton onClick={() => open("about")}>À propos</PixelButton>
         <PixelButton variant="primary" onClick={() => open("projects")}>
           Voir mes projets

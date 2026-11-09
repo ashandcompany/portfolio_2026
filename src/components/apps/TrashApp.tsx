@@ -2,8 +2,8 @@
 
 import { Bug, FileCode, FileText, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 import { PixelButton } from "@/components/ui/PixelButton";
+import { notify } from "@/lib/notify";
 
 interface TrashItem {
   name: string;
@@ -33,7 +33,7 @@ export function TrashApp() {
     if (emptiedAt === null) return;
     const timer = setTimeout(() => {
       setItems([STUBBORN_BUG]);
-      toast("🐛 Un bug est revenu", { description: "Comme d'habitude. On ne gagne jamais vraiment." });
+      notify("🐛 Un bug est revenu", { description: "Comme d'habitude. On ne gagne jamais vraiment." });
     }, 1800);
     return () => clearTimeout(timer);
   }, [emptiedAt]);

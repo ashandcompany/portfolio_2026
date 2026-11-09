@@ -39,6 +39,18 @@ export function Window({ id, children }: WindowProps) {
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   useEffect(() => () => clearTimeout(timer.current), []);
 
+  // Accessibilité : quand la fenêtre passe au premier plan suite à une action
+  // (icône, menu, barre des tâches…), le focus clavier entre dans la fenêtre.
+  // Rien au chargement de la page (focus sur <body>) ni si le focus y est déjà.
+  const sectionRef = useRef<HTMLElement>(null);
+  const isVisibleAndActive = isActive && !!win?.isOpen && !win.isMinimized;
+  useEffect(() => {
+    const section = sectionRef.current;
+    const focused = document.activeElement;
+    if (!isVisibleAndActive || !section || !focused || focused === document.body) return;
+    if (!section.contains(focused)) section.focus({ preventScroll: true });
+  }, [isVisibleAndActive]);
+
   if (!win) return null;
 
   const app = APPS[id];
@@ -76,6 +88,9 @@ export function Window({ id, children }: WindowProps) {
       }
     >
       <motion.section
+        ref={sectionRef}
+        tabIndex={-1}
+        data-window-id={id}
         role="dialog"
         aria-label={app.title}
         aria-hidden={isMinimized || undefined}
@@ -93,7 +108,8 @@ export function Window({ id, children }: WindowProps) {
         }
         style={{ transformOrigin: "50% 100%" }}
         className={cn(
-          "relative flex h-full flex-col overflow-hidden border-2 border-window-border bg-window text-fg",
+          // Pas de contour au focus : la fenêtre active est déjà signalée (ombre, barre de titre).
+          "relative flex h-full flex-col overflow-hidden border-2 border-window-border bg-window text-fg outline-none",
           isMaximized ? "rounded-none" : "rounded-window",
           isActive ? "shadow-window" : "shadow-pixel",
           isMinimized && "pointer-events-none",

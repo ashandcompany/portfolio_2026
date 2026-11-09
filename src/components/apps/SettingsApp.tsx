@@ -2,10 +2,10 @@
 
 import { Check, LayoutGrid, Monitor, Moon, Play, Sun, Volume2, VolumeX } from "lucide-react";
 import type { ReactNode } from "react";
-import { toast } from "sonner";
 import { REPLAY_BOOT_EVENT } from "@/components/os/BootScreen";
 import { PixelButton } from "@/components/ui/PixelButton";
-import { playSound } from "@/lib/sounds";
+import { notify } from "@/lib/notify";
+import { toggleSoundWithFeedback } from "@/lib/sounds";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { cn } from "@/lib/utils";
 import { useDesktopStore } from "@/stores/desktop-store";
@@ -35,7 +35,6 @@ export function SettingsApp() {
   const wallpaper = useSettingsStore((s) => s.wallpaper);
   const setWallpaper = useSettingsStore((s) => s.setWallpaper);
   const soundEnabled = useSettingsStore((s) => s.soundEnabled);
-  const toggleSound = useSettingsStore((s) => s.toggleSound);
   const resetLayout = useDesktopStore((s) => s.resetLayout);
 
   return (
@@ -75,15 +74,7 @@ export function SettingsApp() {
           <p className="text-sm text-fg-muted">
             Petits sons d&apos;interface (clics, ouverture de fenêtres).
           </p>
-          <PixelButton
-            size="sm"
-            onClick={() => {
-              // Petit « ding » de confirmation à l'activation.
-              if (!soundEnabled) playSound("enable", { force: true });
-              toggleSound();
-            }}
-            aria-pressed={soundEnabled}
-          >
+          <PixelButton size="sm" onClick={toggleSoundWithFeedback} aria-pressed={soundEnabled}>
             {soundEnabled ? <Volume2 className="size-4" aria-hidden /> : <VolumeX className="size-4" aria-hidden />}
             {soundEnabled ? "Activés" : "Coupés"}
           </PixelButton>
@@ -101,7 +92,7 @@ export function SettingsApp() {
             size="sm"
             onClick={() => {
               resetLayout();
-              toast("Bureau rangé ✨", { description: "Les fenêtres ont retrouvé leur place." });
+              notify("Bureau rangé ✨", { description: "Les fenêtres ont retrouvé leur place." });
             }}
           >
             <LayoutGrid className="size-4" aria-hidden />
