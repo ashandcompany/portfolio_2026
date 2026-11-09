@@ -33,8 +33,8 @@ export function WindowManager() {
     // 1. Restaurer la disposition sauvegardée, 2. l'ajuster à l'écran actuel.
     Promise.resolve(store.persist.rehydrate()).then(() => {
       measure();
-      // Première visite : on ouvre la fenêtre de bienvenue.
-      if (Object.keys(store.getState().windows).length === 0) store.getState().open("welcome");
+      // Première visite : fenêtres de lancement (Bienvenue + Projets).
+      if (Object.keys(store.getState().windows).length === 0) store.getState().openStartup();
     });
 
     const observer = new ResizeObserver(measure);

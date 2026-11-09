@@ -64,7 +64,7 @@ export const APPS: Record<AppId, AppMeta> = {
     icon: Heart,
     iconClassName: "fill-bubblegum-300 text-plum-700",
     onDesktop: false,
-    defaultSize: { width: 500, height: 380 },
+    defaultSize: { width: 580, height: 660 },
     minSize: { width: 300, height: 220 },
   },
   about: {

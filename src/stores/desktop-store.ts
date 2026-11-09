@@ -39,7 +39,9 @@ interface DesktopState {
   updatePosition: (id: AppId, position: Point) => void;
   updateBounds: (id: AppId, position: Point, size: Size) => void;
   setViewport: (viewport: Size) => void;
-  /** Ferme toutes les fenêtres, oublie la disposition et rouvre la bienvenue. */
+  /** Fenêtres du premier lancement : Bienvenue + Projets, côte à côte si l'écran le permet. */
+  openStartup: () => void;
+  /** Ferme toutes les fenêtres, oublie la disposition et rouvre celles du lancement. */
   resetLayout: () => void;
 
   /** Écran de démarrage terminé (non sauvegardé). */
@@ -57,9 +59,14 @@ export interface SystemError {
   message: string;
 }
 
+/** Position de repli tant que la taille du bureau n'est pas connue. */
 const CASCADE_START: Point = { x: 96, y: 40 };
-const CASCADE_STEP = 32;
 const MARGIN = 8;
+/** Largeur réservée aux icônes du bureau (à gauche) pour la disposition de lancement. */
+const ICON_COLUMN_WIDTH = 112;
+const STARTUP_GAP = 16;
+/** En dessous, Projets n'affiche plus qu'une colonne de cartes : on préfère la cascade. */
+const STARTUP_MIN_PROJECTS_WIDTH = 600;
 
 /** Garde une fenêtre dans le bureau (taille réduite si l'écran est trop petit). */
 function fitWindow(win: WindowState, viewport: Size): WindowState {
@@ -76,6 +83,77 @@ function fitWindow(win: WindowState, viewport: Size): WindowState {
   const x = Math.min(Math.max(win.position.x, 0), Math.max(viewport.width - width, 0));
   const y = Math.min(Math.max(win.position.y, 0), Math.max(viewport.height - height, 0));
   return { ...win, size: { width, height }, position: { x, y } };
+}
+
+/** Pas de la grille de positions testées par `findFreeSpot` (px). */
+const PLACEMENT_STEP = 24;
+
+/** Largeur occupée par les widgets en haut à droite (w-56 + marge), visibles dès le breakpoint lg. */
+const WIDGETS_COLUMN_WIDTH = 240;
+const WIDGETS_MIN_VIEWPORT = 1024;
+
+/** Place réservée à droite pour les widgets, s'ils sont affichés. */
+function widgetsReserve(vw: number) {
+  return vw >= WIDGETS_MIN_VIEWPORT ? WIDGETS_COLUMN_WIDTH : 0;
+}
+
+/**
+ * Plage des x possibles pour une fenêtre de largeur `width` : entre les icônes (à gauche)
+ * et les widgets (à droite) si elle y tient, sinon on s'autorise à les recouvrir.
+ */
+function horizontalRange(width: number, vw: number) {
+  const strictMax = vw - width - MARGIN - widgetsReserve(vw);
+  if (strictMax >= ICON_COLUMN_WIDTH) return { minX: ICON_COLUMN_WIDTH, maxX: strictMax };
+  const maxX = Math.max(vw - width - MARGIN, MARGIN);
+  return { minX: maxX >= ICON_COLUMN_WIDTH ? ICON_COLUMN_WIDTH : MARGIN, maxX };
+}
+
+/**
+ * Position d'une nouvelle fenêtre : l'endroit du bureau où elle recouvre le moins
+ * les fenêtres visibles ; à recouvrement égal, le plus proche du centre.
+ * On évite la colonne d'icônes à gauche quand la place le permet.
+ */
+function findFreeSpot(size: Size, windows: DesktopState["windows"], viewport: Size): Point {
+  const { width: vw, height: vh } = viewport;
+  if (!vw || !vh) return CASCADE_START;
+
+  const obstacles = Object.values(windows)
+    .filter((w): w is WindowState => !!w?.isOpen && !w.isMinimized)
+    .map((w) =>
+      w.isMaximized ? { x: 0, y: 0, width: vw, height: vh } : { ...w.position, ...w.size },
+    );
+
+  const { minX, maxX } = horizontalRange(size.width, vw);
+  const maxY = Math.max(vh - size.height - MARGIN, MARGIN);
+  const center = { x: (minX + maxX) / 2, y: (vh - size.height) / 2 };
+
+  // Positions testées : une grille régulière, plus les bords (sinon on rate les coins).
+  const xs = [...steps(minX, maxX), maxX];
+  const ys = [...steps(MARGIN, maxY), maxY];
+
+  let best: Point = { x: Math.round(Math.max(minX, Math.min(center.x, maxX))), y: MARGIN };
+  let bestScore = Infinity;
+  for (const x of xs) {
+    for (const y of ys) {
+      let overlap = 0;
+      for (const o of obstacles) {
+        const w = Math.min(x + size.width, o.x + o.width) - Math.max(x, o.x);
+        const h = Math.min(y + size.height, o.y + o.height) - Math.max(y, o.y);
+        if (w > 0 && h > 0) overlap += w * h;
+      }
+      // Recouvrement en px² : il prime toujours sur la distance au centre (en px).
+      const score = overlap + Math.hypot(x - center.x, y - center.y);
+      if (score < bestScore) {
+        bestScore = score;
+        best = { x, y };
+      }
+    }
+  }
+  return best;
+}
+
+function* steps(from: number, to: number) {
+  for (let v = from; v <= to; v += PLACEMENT_STEP) yield v;
 }
 
 /** Fenêtre ouverte, non réduite, la plus haute — hors `excludeId`. */
@@ -122,33 +200,26 @@ export const useDesktopStore = create<DesktopState>()(
                 windows: { ...state.windows, [id]: { ...existing, isMinimized: false, zIndex: z } },
               };
             }
-            // Nouvelle ouverture : centrée dans le bureau, puis décalée en cascade selon le
-            // nombre de fenêtres déjà ouvertes. Taille mémorisée si elle a déjà été ouverte.
-            const openCount = Object.values(state.windows).filter((w) => w?.isOpen).length;
-            const offset = (openCount % 6) * CASCADE_STEP;
-            const size = existing?.size ?? APPS[id].defaultSize;
-            const { width: vw, height: vh } = state.viewport;
-            const origin =
-              vw && vh
-                ? {
-                    x: Math.max(MARGIN, Math.round((vw - Math.min(size.width, vw - MARGIN * 2)) / 2)),
-                    y: Math.max(MARGIN, Math.round((vh - Math.min(size.height, vh - MARGIN * 2)) / 2)),
-                  }
-                : CASCADE_START;
-            const base: WindowState = {
-              id,
-              isOpen: true,
-              isMinimized: false,
-              isMaximized: false,
-              zIndex: z,
-              size,
-              position: { x: origin.x + offset, y: origin.y + offset },
-            };
+            // Nouvelle ouverture : taille mémorisée si elle a déjà été ouverte (ajustée à
+            // l'écran), puis placée là où elle recouvre le moins les fenêtres visibles.
+            const fitted = fitWindow(
+              {
+                id,
+                isOpen: true,
+                isMinimized: false,
+                isMaximized: false,
+                zIndex: z,
+                size: existing?.size ?? APPS[id].defaultSize,
+                position: CASCADE_START,
+              },
+              state.viewport,
+            );
+            const position = findFreeSpot(fitted.size, state.windows, state.viewport);
             return {
               startMenuOpen: false,
               topZ: z,
               activeId: id,
-              windows: { ...state.windows, [id]: fitWindow(base, state.viewport) },
+              windows: { ...state.windows, [id]: { ...fitted, position } },
             };
           }),
 
@@ -205,9 +276,43 @@ export const useDesktopStore = create<DesktopState>()(
             return { viewport, windows };
           }),
 
+        openStartup: () => {
+          // Projets d'abord, Bienvenue ensuite : elle est au premier plan et active.
+          get().open("projects");
+          get().open("welcome");
+
+          const { windows, viewport, updatePosition } = get();
+          const welcome = windows.welcome;
+          const projects = windows.projects;
+          if (!welcome || !projects) return;
+
+          // Côte à côte, centrées entre les icônes (gauche) et les widgets (droite).
+          // Projets peut rétrécir (jusqu'à STARTUP_MIN_PROJECTS_WIDTH) pour tenir ; si les
+          // widgets prennent trop de place, on accepte de les recouvrir.
+          // Sinon (petit écran), on garde les positions choisies par findFreeSpot.
+          const fits = (reserve: number) => {
+            const available = viewport.width - ICON_COLUMN_WIDTH - MARGIN - reserve;
+            const width = Math.min(projects.size.width, available - welcome.size.width - STARTUP_GAP);
+            return width >= STARTUP_MIN_PROJECTS_WIDTH ? { available, width } : null;
+          };
+          const layout = fits(widgetsReserve(viewport.width)) ?? fits(0);
+          if (!layout) return;
+          const { available, width: projectsWidth } = layout;
+          const total = welcome.size.width + STARTUP_GAP + projectsWidth;
+          const x = ICON_COLUMN_WIDTH + Math.round((available - total) / 2);
+          const tallest = Math.max(welcome.size.height, projects.size.height);
+          const y = Math.max(MARGIN, Math.round((viewport.height - tallest) / 2));
+          updatePosition("welcome", { x, y });
+          get().updateBounds(
+            "projects",
+            { x: x + welcome.size.width + STARTUP_GAP, y },
+            { width: projectsWidth, height: projects.size.height },
+          );
+        },
+
         resetLayout: () => {
           set({ windows: {}, activeId: null, topZ: 10, startMenuOpen: false });
-          get().open("welcome");
+          get().openStartup();
         },
 
         bootDone: false,
