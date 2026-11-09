@@ -122,18 +122,27 @@ export const useDesktopStore = create<DesktopState>()(
                 windows: { ...state.windows, [id]: { ...existing, isMinimized: false, zIndex: z } },
               };
             }
-            // Nouvelle ouverture : cascade selon le nombre de fenêtres déjà ouvertes,
-            // en réutilisant la taille mémorisée si la fenêtre a déjà été ouverte.
+            // Nouvelle ouverture : centrée dans le bureau, puis décalée en cascade selon le
+            // nombre de fenêtres déjà ouvertes. Taille mémorisée si elle a déjà été ouverte.
             const openCount = Object.values(state.windows).filter((w) => w?.isOpen).length;
             const offset = (openCount % 6) * CASCADE_STEP;
+            const size = existing?.size ?? APPS[id].defaultSize;
+            const { width: vw, height: vh } = state.viewport;
+            const origin =
+              vw && vh
+                ? {
+                    x: Math.max(MARGIN, Math.round((vw - Math.min(size.width, vw - MARGIN * 2)) / 2)),
+                    y: Math.max(MARGIN, Math.round((vh - Math.min(size.height, vh - MARGIN * 2)) / 2)),
+                  }
+                : CASCADE_START;
             const base: WindowState = {
               id,
               isOpen: true,
               isMinimized: false,
               isMaximized: false,
               zIndex: z,
-              size: existing?.size ?? APPS[id].defaultSize,
-              position: { x: CASCADE_START.x + offset, y: CASCADE_START.y + offset },
+              size,
+              position: { x: origin.x + offset, y: origin.y + offset },
             };
             return {
               startMenuOpen: false,
@@ -211,7 +220,10 @@ export const useDesktopStore = create<DesktopState>()(
     },
     {
       name: "emma-os:desktop",
-      version: 1,
+      // v2 : fenêtres plus grandes par défaut → on oublie les anciennes tailles/positions mémorisées.
+      version: 2,
+      migrate: (persisted, version) =>
+        version < 2 ? { windows: {}, topZ: 10 } : (persisted as Pick<DesktopState, "windows" | "topZ">),
       // `window.localStorage` lève une erreur côté serveur → persistance désactivée là-bas.
       storage: createJSONStorage(() => window.localStorage),
       // Réhydratation manuelle côté client (évite les écarts d'hydratation SSR).

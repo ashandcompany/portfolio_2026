@@ -22,11 +22,11 @@ export function WelcomeApp() {
         double-clique sur les icônes pour découvrir mon parcours ✨
       </p>
       <div className="flex flex-wrap gap-2">
-        <Tag color="lavender">React / Next.js</Tag>
-        <Tag color="bubblegum">TypeScript</Tag>
-        <Tag color="sky">PHP</Tag>
-        <Tag color="mint">Docker</Tag>
-        <Tag color="butter">MySQL</Tag>
+        <Tag tone="soft" color="lavender">React / Next.js</Tag>
+        <Tag tone="soft" color="bubblegum">TypeScript</Tag>
+        <Tag tone="soft" color="sky">PHP</Tag>
+        <Tag tone="soft" color="mint">Docker</Tag>
+        <Tag tone="soft" color="butter">MySQL</Tag>
       </div>
       <div className="flex flex-wrap items-center justify-end gap-2 pt-2">
         <Link

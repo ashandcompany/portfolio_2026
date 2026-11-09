@@ -7,6 +7,8 @@ import { projects, type Project } from "@/data/projects";
 import type { SkillColor } from "@/data/skills";
 import { cn, isPlaceholder } from "@/lib/utils";
 import { GithubIcon } from "@/components/ui/BrandIcons";
+import { Eyebrow, PageHeader } from "@/components/ui/PageHeader";
+import { SectionTitle } from "@/components/ui/SectionTitle";
 import { PixelButton, PixelLink } from "@/components/ui/PixelButton";
 import { RichText } from "@/components/ui/RichText";
 import { Tag } from "@/components/ui/Tag";
@@ -81,36 +83,45 @@ function ProjectThumb({ project, className }: { project: Project; className?: st
 
 function ProjectGrid({ onOpen }: { onOpen: (id: string) => void }) {
   return (
-    <ul className="grid gap-4 p-4 @md:grid-cols-2 @3xl:grid-cols-3">
-      {projects.map((project) => (
-        <li key={project.id}>
-          <button
-            type="button"
-            onClick={() => onOpen(project.id)}
-            className="group flex h-full w-full flex-col overflow-hidden rounded-window border-2 border-window-border bg-card text-left shadow-pixel-sm transition-transform hover:-translate-y-0.5 hover:shadow-pixel"
-          >
-            <ProjectThumb project={project} className="h-24" />
-            <div className="flex flex-1 flex-col gap-1.5 p-3">
-              <div className="flex items-start justify-between gap-2">
-                <h3 className="font-pixel leading-tight">{project.title}</h3>
-                {project.placeholder ? (
-                  <Tag color="warning" className="shrink-0">à compléter</Tag>
-                ) : (
-                  <span className="font-pixel shrink-0 text-xs text-fg-muted">{project.year}</span>
-                )}
+    <div className="space-y-4 p-4">
+      <PageHeader
+        eyebrow="Réalisations"
+        title="Projets"
+        lead="Clique sur un projet pour voir le détail, la stack et le code."
+      />
+      <ul className="grid gap-4 @md:grid-cols-2 @3xl:grid-cols-3">
+        {projects.map((project) => (
+          <li key={project.id}>
+            <button
+              type="button"
+              onClick={() => onOpen(project.id)}
+              className={cn(
+                "group flex h-full w-full flex-col overflow-hidden rounded-window border-2 border-window-border bg-card text-left shadow-pixel-sm transition-transform hover:-translate-y-0.5 hover:shadow-pixel",
+                // Projet à compléter : en retrait, pour ne pas concurrencer les vrais projets.
+                project.placeholder && "border-dashed opacity-70 shadow-none",
+              )}
+            >
+              <ProjectThumb project={project} className="h-28" />
+              <div className="flex flex-1 flex-col gap-1 p-3">
+                <Eyebrow>
+                  {project.placeholder ? "à compléter" : `${project.context} · ${project.year}`}
+                </Eyebrow>
+                <h3 className="font-pixel text-lg leading-tight">{project.title}</h3>
+                <p className="text-sm text-fg-muted">{project.summary}</p>
+                <div className="mt-auto flex flex-wrap gap-1 pt-2">
+                  {project.stack.slice(0, 3).map((tech) => (
+                    <Tag key={tech} tone="soft" color={project.color}>{tech}</Tag>
+                  ))}
+                  {project.stack.length > 3 && (
+                    <Tag tone="soft" color={project.color}>+{project.stack.length - 3}</Tag>
+                  )}
+                </div>
               </div>
-              <p className="text-sm text-fg-muted">{project.summary}</p>
-              <div className="mt-auto flex flex-wrap gap-1 pt-1">
-                {project.stack.slice(0, 3).map((tech) => (
-                  <Tag key={tech} color={project.color}>{tech}</Tag>
-                ))}
-                {project.stack.length > 3 && <Tag color={project.color}>+{project.stack.length - 3}</Tag>}
-              </div>
-            </div>
-          </button>
-        </li>
-      ))}
-    </ul>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
@@ -118,50 +129,64 @@ function ProjectDetail({ project }: { project: Project }) {
   const github = project.links?.github;
   const demo = project.links?.demo;
 
+  const hasLinks = !isPlaceholder(github) || !isPlaceholder(demo);
+
   return (
-    <article className="space-y-4 p-4">
+    <article className="space-y-6 p-4">
       <ProjectThumb project={project} className="h-40 rounded-window border-2 @md:h-56" />
 
-      <header className="space-y-1">
-        <div className="flex flex-wrap items-center gap-2">
+      {/* L'essentiel d'abord : contexte, titre, résumé et liens, regroupés */}
+      <header className="space-y-3">
+        <div className="space-y-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <Eyebrow>
+              {project.context} · {project.year}
+            </Eyebrow>
+            {project.placeholder && <Tag color="warning">à compléter</Tag>}
+          </div>
           <h2 className="font-pixel text-2xl leading-tight">{project.title}</h2>
-          {project.placeholder && <Tag color="warning">à compléter</Tag>}
+          <p className="font-semibold">{project.summary}</p>
         </div>
-        <p className="font-pixel text-sm text-fg-muted">
-          {project.context} · {project.year}
-        </p>
+        {hasLinks && (
+          <div className="flex flex-wrap gap-2">
+            {!isPlaceholder(demo) && (
+              <PixelLink href={demo} variant="primary">
+                <ExternalLink className="size-4" aria-hidden />
+                Voir le projet
+              </PixelLink>
+            )}
+            {!isPlaceholder(github) && (
+              <PixelLink href={github} variant={isPlaceholder(demo) ? "primary" : "default"}>
+                <GithubIcon className="size-4" />
+                Code source
+              </PixelLink>
+            )}
+          </div>
+        )}
       </header>
 
-      <div className="space-y-2 leading-relaxed text-fg-muted">
-        {project.description.map((paragraph) => (
-          <p key={paragraph}>
-            <RichText text={paragraph} />
-          </p>
-        ))}
-      </div>
-
-      <div className="flex flex-wrap gap-1.5">
-        {project.stack.map((tech) => (
-          <Tag key={tech} color={project.color}>{tech}</Tag>
-        ))}
-      </div>
-
-      {(!isPlaceholder(github) || !isPlaceholder(demo)) && (
-        <div className="flex flex-wrap gap-2 border-t-2 border-dashed border-window-border pt-4">
-          {!isPlaceholder(github) && (
-            <PixelLink href={github}>
-              <GithubIcon className="size-4" />
-              Code source
-            </PixelLink>
-          )}
-          {!isPlaceholder(demo) && (
-            <PixelLink href={demo} variant="primary">
-              <ExternalLink className="size-4" aria-hidden />
-              Voir le projet
-            </PixelLink>
-          )}
+      {/* Le détail ensuite, pour qui veut creuser */}
+      <section className="space-y-2">
+        <SectionTitle>Le projet</SectionTitle>
+        <div className="space-y-2 text-sm leading-relaxed text-fg-muted">
+          {project.description.map((paragraph) => (
+            <p key={paragraph}>
+              <RichText text={paragraph} />
+            </p>
+          ))}
         </div>
-      )}
+      </section>
+
+      <section className="space-y-2">
+        <SectionTitle>Stack</SectionTitle>
+        <ul className="flex flex-wrap gap-1.5">
+          {project.stack.map((tech) => (
+            <li key={tech}>
+              <Tag tone="soft" color={project.color}>{tech}</Tag>
+            </li>
+          ))}
+        </ul>
+      </section>
     </article>
   );
 }

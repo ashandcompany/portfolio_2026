@@ -14,6 +14,11 @@ type Color =
 
 export interface TagProps extends HTMLAttributes<HTMLSpanElement> {
   color?: Color;
+  /**
+   * « solid » (défaut) : étiquette pixel en relief, pour un statut qui doit se voir (en cours, à compléter…).
+   * « soft » : pastille discrète, pour les listes (technos, sujets) qui ne doivent pas concurrencer les titres.
+   */
+  tone?: "solid" | "soft";
 }
 
 const colors: Record<Color, string> = {
@@ -29,11 +34,13 @@ const colors: Record<Color, string> = {
 };
 
 /** Petite étiquette pixel (technos d'un projet, statut…). */
-export function Tag({ color = "lavender", className, ...props }: TagProps) {
+export function Tag({ color = "lavender", tone = "solid", className, ...props }: TagProps) {
   return (
     <span
       className={cn(
-        "font-pixel inline-flex items-center gap-1 rounded-control border-2 border-control-border px-1.5 py-px text-xs shadow-pixel-sm",
+        tone === "solid"
+          ? "font-pixel inline-flex items-center gap-1 rounded-control border-2 border-control-border px-1.5 py-px text-xs shadow-pixel-sm"
+          : "inline-flex items-center gap-1 rounded-control px-1.5 py-0.5 text-xs font-semibold",
         colors[color],
         className,
       )}

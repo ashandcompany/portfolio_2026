@@ -49,6 +49,7 @@ export interface AppMeta {
   iconClassName: string;
   /** Affichée en icône sur le bureau. */
   onDesktop: boolean;
+  /** Taille idéale sur un écran de PC ; réduite automatiquement si l'écran est plus petit. */
   defaultSize: Size;
   minSize: Size;
 }
@@ -63,7 +64,7 @@ export const APPS: Record<AppId, AppMeta> = {
     icon: Heart,
     iconClassName: "fill-bubblegum-300 text-plum-700",
     onDesktop: false,
-    defaultSize: { width: 440, height: 340 },
+    defaultSize: { width: 500, height: 380 },
     minSize: { width: 300, height: 220 },
   },
   about: {
@@ -75,7 +76,7 @@ export const APPS: Record<AppId, AppMeta> = {
     icon: UserRound,
     iconClassName: "fill-lavender-300 text-plum-700",
     onDesktop: true,
-    defaultSize: { width: 520, height: 400 },
+    defaultSize: { width: 720, height: 640 },
     minSize: { width: 320, height: 240 },
   },
   projects: {
@@ -87,7 +88,7 @@ export const APPS: Record<AppId, AppMeta> = {
     icon: FolderHeart,
     iconClassName: "fill-folder text-plum-700",
     onDesktop: true,
-    defaultSize: { width: 680, height: 460 },
+    defaultSize: { width: 920, height: 660 },
     minSize: { width: 360, height: 260 },
   },
   experience: {
@@ -99,7 +100,7 @@ export const APPS: Record<AppId, AppMeta> = {
     icon: BriefcaseBusiness,
     iconClassName: "fill-bubblegum-200 text-plum-700",
     onDesktop: true,
-    defaultSize: { width: 560, height: 440 },
+    defaultSize: { width: 760, height: 640 },
     minSize: { width: 340, height: 260 },
   },
   education: {
@@ -111,7 +112,7 @@ export const APPS: Record<AppId, AppMeta> = {
     icon: GraduationCap,
     iconClassName: "fill-sky-pastel-300 text-plum-700",
     onDesktop: true,
-    defaultSize: { width: 540, height: 420 },
+    defaultSize: { width: 760, height: 640 },
     minSize: { width: 340, height: 260 },
   },
   skills: {
@@ -123,7 +124,7 @@ export const APPS: Record<AppId, AppMeta> = {
     icon: SquareCode,
     iconClassName: "fill-mint-300 text-plum-700",
     onDesktop: true,
-    defaultSize: { width: 520, height: 420 },
+    defaultSize: { width: 780, height: 620 },
     minSize: { width: 320, height: 260 },
   },
   cv: {
@@ -135,7 +136,7 @@ export const APPS: Record<AppId, AppMeta> = {
     icon: FileText,
     iconClassName: "fill-cream text-plum-700",
     onDesktop: true,
-    defaultSize: { width: 600, height: 560 },
+    defaultSize: { width: 860, height: 760 },
     minSize: { width: 340, height: 300 },
   },
   contact: {
@@ -147,7 +148,7 @@ export const APPS: Record<AppId, AppMeta> = {
     icon: Mail,
     iconClassName: "fill-butter-200 text-plum-700",
     onDesktop: true,
-    defaultSize: { width: 480, height: 400 },
+    defaultSize: { width: 620, height: 540 },
     minSize: { width: 320, height: 260 },
   },
   settings: {
@@ -159,7 +160,7 @@ export const APPS: Record<AppId, AppMeta> = {
     icon: Settings,
     iconClassName: "fill-lavender-200 text-plum-700",
     onDesktop: false,
-    defaultSize: { width: 460, height: 520 },
+    defaultSize: { width: 560, height: 640 },
     minSize: { width: 320, height: 300 },
   },
   trash: {
@@ -171,7 +172,7 @@ export const APPS: Record<AppId, AppMeta> = {
     icon: Trash2,
     iconClassName: "fill-lavender-200 text-plum-700",
     onDesktop: true,
-    defaultSize: { width: 420, height: 300 },
+    defaultSize: { width: 480, height: 360 },
     minSize: { width: 300, height: 220 },
   },
 };
