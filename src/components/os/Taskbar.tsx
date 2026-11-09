@@ -5,6 +5,7 @@ import { useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { APPS, type AppId } from "@/data/apps";
 import { cn } from "@/lib/utils";
+import { AppIcon } from "@/components/ui/AppIcon";
 import { useDesktopStore } from "@/stores/desktop-store";
 import { useSettingsStore } from "@/stores/settings-store";
 import { Clock } from "./Clock";
@@ -66,7 +67,6 @@ function TaskbarWindows() {
       {openWindows.map((entry) => {
         const [id, minimized] = entry.split(":") as [AppId, string];
         const app = APPS[id];
-        const Icon = app.icon;
         const isActive = activeId === id;
         const isMinimized = minimized === "1";
         return (
@@ -82,7 +82,7 @@ function TaskbarWindows() {
               isMinimized && "opacity-60",
             )}
           >
-            <Icon className={cn("size-3.5 shrink-0", app.iconClassName)} aria-hidden />
+            <AppIcon app={app} className="size-3.5" />
             <span className="hidden truncate sm:inline">{app.fileName}</span>
           </button>
         );

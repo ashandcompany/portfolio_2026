@@ -20,6 +20,21 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    id: "heros-sos",
+    title: "Heros-SOS",
+    summary: "Plateforme qui met en relation citoyens et super-héros pour signaler et gérer les incidents causés par des super-vilains.",
+    description: [
+      "Application web à **trois rôles** : les citoyens signalent des incidents (même **hors ligne**, synchronisés au retour du réseau), les héros les prennent en charge, collaborent et votent leur issue, et les modérateurs valident les héros et gèrent un **back-office** complet.",
+      "Côté front, **Next.js 16** et **React 19** avec carte interactive **Leaflet** et mises à jour en temps réel (**SSE**). Côté back, une **API REST en Go** conçue à partir d'un contrat **OpenAPI**, avec **PostgreSQL**, **RabbitMQ** pour l'envoi de mails et **Caddy** en reverse proxy, le tout orchestré avec **Docker Compose**.",
+      "Sécurité soignée : **double authentification TOTP**, hachage argon2id, protection CSRF, limitation de débit et chiffrement des données personnelles. Le projet est testé avec **Vitest** et **Playwright**, et intégré en continu avec **GitHub Actions**.",
+    ],
+    stack: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Go", "PostgreSQL", "RabbitMQ", "Docker", "Leaflet", "Playwright"],
+    year: "2026",
+    context: "Projet d'équipe", // TODO: préciser (projet d'école ? ) et ton rôle dans l'équipe
+    color: "bubblegum",
+    links: { github: "https://github.com/ashandcompany/heros-sos" },
+  },
+  {
     id: "emma-os",
     title: "Emma OS",
     summary: "Ce portfolio : un bureau d'ordinateur pastel et interactif.",
@@ -32,20 +47,6 @@ export const projects: Project[] = [
     context: "Projet personnel",
     color: "lavender",
     links: { github: "https://github.com/TODO" }, // TODO: lien du dépôt
-  },
-  {
-    id: "projet-2",
-    title: "Projet à venir",
-    summary: "TODO — résumé du projet en une phrase.",
-    description: [
-      "TODO — contexte du projet, problème résolu et ton rôle.",
-      "TODO — résultat ou fonctionnalité dont tu es fière.",
-    ],
-    stack: ["TODO"],
-    year: "TODO",
-    context: "TODO (projet d'école, alternance, perso…)",
-    color: "bubblegum",
-    placeholder: true,
   },
   {
     id: "projet-3",

@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { searchApps } from "@/data/apps";
 import { profile } from "@/data/profile";
 import { cn } from "@/lib/utils";
+import { AppIcon } from "@/components/ui/AppIcon";
 import { Avatar } from "@/components/ui/Avatar";
 import { useDesktopStore } from "@/stores/desktop-store";
 
@@ -97,7 +98,7 @@ function StartMenuPanel({ anchorRef }: StartMenuProps) {
           if (results[0]) open(results[0].id);
         }}
       >
-        <label className="flex h-9 items-center gap-2 rounded-control border-2 border-control-border bg-surface px-2 focus-within:bg-white">
+        <label className="flex h-9 items-center gap-2 rounded-control border-2 border-control-border bg-surface px-2 focus-within:border-bubblegum-500 focus-within:bg-white">
           <Search className="size-4 shrink-0 text-fg-muted" aria-hidden />
           <input
             autoFocus
@@ -114,7 +115,6 @@ function StartMenuPanel({ anchorRef }: StartMenuProps) {
       {/* Applications */}
       <ul className="min-h-0 flex-1 overflow-y-auto px-2 pb-2" aria-label="Applications">
         {results.map((app, index) => {
-          const Icon = app.icon;
           return (
             <li key={app.id}>
               <button
@@ -125,7 +125,7 @@ function StartMenuPanel({ anchorRef }: StartMenuProps) {
                   query && index === 0 && "bg-surface-hover",
                 )}
               >
-                <Icon className={cn("size-6 shrink-0", app.iconClassName)} strokeWidth={1.5} aria-hidden />
+                <AppIcon app={app} className="size-6" strokeWidth={1.5} />
                 <span className="min-w-0">
                   <span className="font-pixel block text-sm leading-tight">{app.title}</span>
                   <span className="block truncate text-xs text-fg-muted">{app.description}</span>

@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import type { AppMeta } from "@/data/apps";
 import { cn } from "@/lib/utils";
+import { AppIcon } from "@/components/ui/AppIcon";
 import { useDesktopStore } from "@/stores/desktop-store";
 
 interface DesktopIconProps {
@@ -19,7 +20,6 @@ interface DesktopIconProps {
 export function DesktopIcon({ app, selected, onSelect }: DesktopIconProps) {
   const open = useDesktopStore((s) => s.open);
   const pointerType = useRef<string>("mouse");
-  const Icon = app.icon;
 
   return (
     <button
@@ -44,8 +44,9 @@ export function DesktopIcon({ app, selected, onSelect }: DesktopIconProps) {
           selected ? "bg-lavender-300/60" : "group-hover:bg-white/30",
         )}
       >
-        <Icon
-          className={cn("size-10 drop-shadow-[2px_2px_0_rgb(75_53_102/0.25)]", app.iconClassName)}
+        <AppIcon
+          app={app}
+          className="size-10 drop-shadow-[2px_2px_0_rgb(75_53_102/0.25)]"
           strokeWidth={1.5}
         />
       </span>

@@ -117,31 +117,35 @@
   }
 }
 
-/* ───────────────────────── Base ───────────────────────── */
-:root {
-  color-scheme: light;
-}
+/* ───────────────────────── Base ─────────────────────────
+ * Dans @layer base pour que les utilitaires Tailwind (ex. outline-none)
+ * puissent surcharger ces styles par défaut. */
+@layer base {
+  :root {
+    color-scheme: light;
+  }
 
-html,
-body {
-  height: 100%;
-}
+  html,
+  body {
+    height: 100%;
+  }
 
-body {
-  background: var(--color-desktop);
-  color: var(--color-fg);
-  font-family: var(--font-body);
-  -webkit-font-smoothing: antialiased;
-}
+  body {
+    background: var(--color-desktop);
+    color: var(--color-fg);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
 
-::selection {
-  background: var(--color-signature);
-  color: var(--color-fg);
-}
+  ::selection {
+    background: var(--color-signature);
+    color: var(--color-fg);
+  }
 
-:focus-visible {
-  outline: 2px dashed var(--color-bubblegum-500);
-  outline-offset: 2px;
+  :focus-visible {
+    outline: 2px dashed var(--color-bubblegum-500);
+    outline-offset: 2px;
+  }
 }
 
 /* ───────────────────────── Utilitaires ───────────────────────── */

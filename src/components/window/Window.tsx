@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Rnd } from "react-rnd";
 import { APPS, type AppId } from "@/data/apps";
 import { cn } from "@/lib/utils";
+import { AppIcon } from "@/components/ui/AppIcon";
 import { useDesktopStore } from "@/stores/desktop-store";
 import { TitleBar } from "@/components/ui/TitleBar";
 import { WindowControls } from "./WindowControls";
@@ -41,7 +42,6 @@ export function Window({ id, children }: WindowProps) {
   if (!win) return null;
 
   const app = APPS[id];
-  const Icon = app.icon;
   const { isMaximized, isMinimized } = win;
 
   const handleToggleMaximize = () => {
@@ -102,7 +102,7 @@ export function Window({ id, children }: WindowProps) {
         <TitleBar
           className={cn("window-drag-handle", !isMaximized && "cursor-grab active:cursor-grabbing")}
           title={app.fileName}
-          icon={<Icon className={cn("size-4", app.iconClassName)} aria-hidden />}
+          icon={<AppIcon app={app} className="size-4" />}
           active={isActive}
           onDoubleClick={handleToggleMaximize}
           actions={

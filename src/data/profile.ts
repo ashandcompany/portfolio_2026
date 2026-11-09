@@ -11,9 +11,8 @@ export const profile = {
   /** Rôle court (menu démarrer, en-têtes). */
   role: "Développeuse Fullstack",
   /** Titre long (CV). */
-  headline: "Étudiante en Mastère Manager de l'ingénierie numérique",
-  /** Photo dans /public (ex. "/emma.jpg"). null = avatar avec initiales. */
-  photo: null as string | null, // TODO: ajouter la photo dans public/ puis renseigner le chemin
+  headline: "Développeuse web fullstack",
+  photo: "/profile_picture.jpg",
   location: "Rouen",
   status: "En alternance chez Ampère (Renault)",
   availability: "À la recherche d'un poste de développeuse web",
@@ -26,8 +25,8 @@ export const profile = {
   phone: "+33 7 83 10 62 30",
   showPhone: false,
   links: {
-    linkedin: "https://www.linkedin.com/in/TODO", // TODO: URL du profil LinkedIn
-    github: "https://github.com/TODO", // TODO: URL du profil GitHub
+    linkedin: "https://www.linkedin.com/in/emma-roizot/",
+    github: "https://github.com/ashandcompany",
   },
   /** Chemin du CV PDF dans /public (le bouton se désactive si le fichier est absent). */
   cvPdf: "/cv-emma-roizot.pdf", // TODO: déposer le PDF dans public/
