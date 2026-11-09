@@ -63,17 +63,27 @@ export function ProjectsApp() {
   );
 }
 
-function ProjectThumb({ project, className }: { project: Project; className?: string }) {
+function ProjectThumb({
+  project,
+  className,
+  sizes = "(max-width: 768px) 100vw, 400px",
+}: {
+  project: Project;
+  className?: string;
+  /** Largeur affichée, pour que next/image serve une version assez nette. */
+  sizes?: string;
+}) {
   return (
     <div
       className={cn(
-        "relative flex items-center justify-center overflow-hidden border-b-2 border-window-border",
+        // Même format que les captures (1600×1000) : l'image entière, sans rognage.
+        "relative flex aspect-[16/10] items-center justify-center overflow-hidden border-b-2 border-window-border",
         thumbBg[project.color],
         className,
       )}
     >
       {project.image ? (
-        <Image src={project.image} alt={`Capture de ${project.title}`} fill className="object-cover object-left-top" sizes="(max-width: 768px) 100vw, 400px" />
+        <Image src={project.image} alt={`Capture de ${project.title}`} fill className="object-cover object-left-top" sizes={sizes} />
       ) : (
         <ImageIcon className="size-8 text-plum-500/60" aria-hidden />
       )}
@@ -101,7 +111,7 @@ function ProjectGrid({ onOpen }: { onOpen: (id: string) => void }) {
                 project.placeholder && "border-dashed opacity-70 shadow-none",
               )}
             >
-              <ProjectThumb project={project} className="h-28" />
+              <ProjectThumb project={project} />
               <div className="flex flex-1 flex-col gap-1 p-3">
                 <Eyebrow>
                   {project.placeholder ? "à compléter" : `${project.context} · ${project.year}`}
@@ -132,61 +142,95 @@ function ProjectDetail({ project }: { project: Project }) {
   const hasLinks = !isPlaceholder(github) || !isPlaceholder(demo);
 
   return (
-    <article className="space-y-6 p-4">
-      <ProjectThumb project={project} className="h-40 rounded-window border-2 @md:h-56" />
+    <article className="mx-auto w-full max-w-5xl space-y-6 p-4 @3xl:space-y-8 @3xl:p-6">
+      {/* Capture seulement si elle existe : pas de grand bandeau vide */}
+      {project.image && (
+        <ProjectThumb
+          project={project}
+          className="rounded-window border-2 shadow-pixel-sm"
+          sizes="(max-width: 1100px) 100vw, 1000px"
+        />
+      )}
 
       {/* L'essentiel d'abord : contexte, titre, résumé et liens, regroupés */}
-      <header className="space-y-3">
-        <div className="space-y-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <Eyebrow>
-              {project.context} · {project.year}
-            </Eyebrow>
-            {project.placeholder && <Tag color="warning">à compléter</Tag>}
-          </div>
-          <h2 className="font-pixel text-2xl leading-tight">{project.title}</h2>
-          <p className="font-semibold">{project.summary}</p>
-        </div>
-        {hasLinks && (
-          <div className="flex flex-wrap gap-2">
-            {!isPlaceholder(demo) && (
-              <PixelLink href={demo} variant="primary">
-                <ExternalLink className="size-4" aria-hidden />
-                Voir le projet
-              </PixelLink>
+      <header className="flex items-start gap-4">
+        {!project.image && (
+          <div
+            aria-hidden
+            className={cn(
+              "hidden size-16 shrink-0 items-center justify-center rounded-window border-2 border-window-border shadow-pixel-sm @md:flex",
+              thumbBg[project.color],
             )}
-            {!isPlaceholder(github) && (
-              <PixelLink href={github} variant={isPlaceholder(demo) ? "primary" : "default"}>
-                <GithubIcon className="size-4" />
-                Code source
-              </PixelLink>
-            )}
+          >
+            <FolderHeart className="size-8 fill-folder text-plum-700" />
           </div>
         )}
+        <div className="min-w-0 flex-1 space-y-3">
+          <div className="space-y-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <Eyebrow>
+                {project.context} · {project.year}
+              </Eyebrow>
+              {project.placeholder && <Tag color="warning">à compléter</Tag>}
+            </div>
+            <h2 className="font-pixel text-2xl leading-tight @3xl:text-3xl">{project.title}</h2>
+            <p className="max-w-2xl font-semibold">{project.summary}</p>
+          </div>
+          {hasLinks && (
+            <div className="flex flex-wrap gap-2">
+              {!isPlaceholder(demo) && (
+                <PixelLink href={demo} variant="primary">
+                  <ExternalLink className="size-4" aria-hidden />
+                  Voir le projet
+                </PixelLink>
+              )}
+              {!isPlaceholder(github) && (
+                <PixelLink href={github} variant={isPlaceholder(demo) ? "primary" : "default"}>
+                  <GithubIcon className="size-4" />
+                  Code source
+                </PixelLink>
+              )}
+            </div>
+          )}
+        </div>
       </header>
 
-      {/* Le détail ensuite, pour qui veut creuser */}
-      <section className="space-y-2">
-        <SectionTitle>Le projet</SectionTitle>
-        <div className="space-y-2 text-sm leading-relaxed text-fg-muted">
-          {project.description.map((paragraph) => (
-            <p key={paragraph}>
-              <RichText text={paragraph} />
-            </p>
-          ))}
-        </div>
-      </section>
+      {/* Le détail ensuite : texte à gauche, fiche technique à droite sur grand écran */}
+      <div className="grid gap-6 @3xl:grid-cols-[minmax(0,1fr)_16rem] @3xl:items-start @3xl:gap-8">
+        <section className="space-y-2">
+          <SectionTitle>Le projet</SectionTitle>
+          <div className="max-w-prose space-y-3 text-sm leading-relaxed text-fg-muted">
+            {project.description.map((paragraph) => (
+              <p key={paragraph}>
+                <RichText text={paragraph} />
+              </p>
+            ))}
+          </div>
+        </section>
 
-      <section className="space-y-2">
-        <SectionTitle>Stack</SectionTitle>
-        <ul className="flex flex-wrap gap-1.5">
-          {project.stack.map((tech) => (
-            <li key={tech}>
-              <Tag tone="soft" color={project.color}>{tech}</Tag>
-            </li>
-          ))}
-        </ul>
-      </section>
+        <aside className="space-y-4 rounded-window border-2 border-window-border bg-card p-4 shadow-pixel-sm @3xl:sticky @3xl:top-4">
+          <dl className="grid grid-cols-2 gap-3 text-sm">
+            <div className="space-y-0.5">
+              <dt className="text-xs font-bold tracking-wider text-fg-muted uppercase">Contexte</dt>
+              <dd className="font-semibold">{project.context}</dd>
+            </div>
+            <div className="space-y-0.5">
+              <dt className="text-xs font-bold tracking-wider text-fg-muted uppercase">Année</dt>
+              <dd className="font-semibold">{project.year}</dd>
+            </div>
+          </dl>
+          <div className="space-y-2">
+            <SectionTitle>Stack</SectionTitle>
+            <ul className="flex flex-wrap gap-1.5">
+              {project.stack.map((tech) => (
+                <li key={tech}>
+                  <Tag tone="soft" color={project.color}>{tech}</Tag>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </aside>
+      </div>
     </article>
   );
 }
