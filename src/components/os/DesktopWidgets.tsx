@@ -12,20 +12,25 @@ import {
 } from "date-fns";
 import { fr } from "date-fns/locale";
 import { CalendarHeart } from "lucide-react";
+import type { ReactNode } from "react";
 import { PixelPanel } from "@/components/ui/PixelPanel";
 import { cn } from "@/lib/utils";
 import { useNow } from "./Clock";
 
 const WEEKDAYS = ["L", "M", "M", "J", "V", "S", "D"];
 
-/** Petits widgets décoratifs en haut à droite du bureau (grands écrans uniquement). */
-export function DesktopWidgets() {
+/**
+ * Petits widgets décoratifs en haut à droite du bureau (grands écrans uniquement).
+ * `github` : widget de contributions, rendu côté serveur et transmis depuis la page.
+ */
+export function DesktopWidgets({ github }: { github?: ReactNode }) {
   return (
     <aside
       aria-label="Widgets"
       className="absolute top-4 right-4 hidden w-56 flex-col items-end gap-4 lg:flex"
     >
       <CalendarWidget />
+      {github}
       <StickyNote />
     </aside>
   );

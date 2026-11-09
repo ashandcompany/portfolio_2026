@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { toast, Toaster } from "sonner";
 import { WindowManager } from "@/components/window/WindowManager";
 import { DESKTOP_APPS, type AppId } from "@/data/apps";
@@ -15,8 +15,11 @@ import { Wallpaper } from "./Wallpaper";
 
 const WELCOME_TOAST_KEY = "emma-os:welcomed";
 
-/** Bureau d'Emma OS : fond, icônes, widgets, fenêtres, barre des tâches et notifications. */
-export function Desktop() {
+/**
+ * Bureau d'Emma OS : fond, icônes, widgets, fenêtres, barre des tâches et notifications.
+ * `githubWidget` : composant serveur (contributions GitHub) passé depuis la page.
+ */
+export function Desktop({ githubWidget }: { githubWidget?: ReactNode }) {
   const [selectedIcon, setSelectedIcon] = useState<AppId | null>(null);
   const bootDone = useDesktopStore((s) => s.bootDone);
 
@@ -67,7 +70,7 @@ export function Desktop() {
             />
           ))}
         </nav>
-        <DesktopWidgets />
+        <DesktopWidgets github={githubWidget} />
         <WindowManager />
       </div>
 
