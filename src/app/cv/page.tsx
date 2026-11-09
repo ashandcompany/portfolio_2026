@@ -196,7 +196,12 @@ export default function SimpleCvPage() {
 }
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
-  const id = `section-${title.normalize("NFD").replace(/[^a-zA-Z]+/g, "-").toLowerCase()}`;
+  const slug = title
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "") // retire les accents
+    .replace(/[^a-zA-Z]+/g, "-")
+    .toLowerCase();
+  const id = `section-${slug}`;
   return (
     <section className="space-y-4" aria-labelledby={id}>
       <h2
