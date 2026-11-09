@@ -85,6 +85,18 @@ function fitWindow(win: WindowState, viewport: Size): WindowState {
   return { ...win, size: { width, height }, position: { x, y } };
 }
 
+/**
+ * Taille du bureau. Normalement mesurée par le WindowManager ; si elle manque encore
+ * (store recréé par un rechargement à chaud en dev, ouverture avant la 1re mesure…),
+ * on la lit directement dans le DOM plutôt que de placer les fenêtres « à l'aveugle ».
+ */
+function currentViewport(viewport: Size): Size {
+  if (viewport.width && viewport.height) return viewport;
+  if (typeof document === "undefined") return viewport;
+  const el = document.querySelector<HTMLElement>("[data-desktop-viewport]");
+  return el ? { width: el.clientWidth, height: el.clientHeight } : viewport;
+}
+
 /** Pas de la grille de positions testées par `findFreeSpot` (px). */
 const PLACEMENT_STEP = 24;
 
@@ -202,6 +214,7 @@ export const useDesktopStore = create<DesktopState>()(
             }
             // Nouvelle ouverture : taille mémorisée si elle a déjà été ouverte (ajustée à
             // l'écran), puis placée là où elle recouvre le moins les fenêtres visibles.
+            const viewport = currentViewport(state.viewport);
             const fitted = fitWindow(
               {
                 id,
@@ -212,10 +225,11 @@ export const useDesktopStore = create<DesktopState>()(
                 size: existing?.size ?? APPS[id].defaultSize,
                 position: CASCADE_START,
               },
-              state.viewport,
+              viewport,
             );
-            const position = findFreeSpot(fitted.size, state.windows, state.viewport);
+            const position = findFreeSpot(fitted.size, state.windows, viewport);
             return {
+              viewport,
               startMenuOpen: false,
               topZ: z,
               activeId: id,

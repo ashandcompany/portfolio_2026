@@ -45,7 +45,7 @@ export function WindowManager() {
   useWindowKeyboard();
 
   return (
-    <div ref={containerRef} className="pointer-events-none absolute inset-0 overflow-hidden">
+    <div ref={containerRef} data-desktop-viewport className="pointer-events-none absolute inset-0 overflow-hidden">
       <AnimatePresence>
         {openIds.map((id) => {
           const App = APP_COMPONENTS[id];
