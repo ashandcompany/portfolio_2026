@@ -88,6 +88,8 @@ Quelques choix :
 
 Le site est entièrement statique et se déploie tel quel sur [Vercel](https://vercel.com/new) : importer le dépôt, aucune variable d'environnement n'est nécessaire.
 
+La mesure d'audience utilise [Vercel Web Analytics](https://vercel.com/docs/analytics) (composant `<Analytics />` dans `layout.tsx`). Elle ne collecte des données qu'une fois le site déployé sur Vercel et Analytics activé dans le tableau de bord du projet ; en local, le composant ne fait rien.
+
 ## Feuille de route
 
 - [x] Socle, design system et gestionnaire de fenêtres
