@@ -1,7 +1,7 @@
 "use client";
 
-import { Sparkles, Volume2, VolumeX } from "lucide-react";
-import { useRef } from "react";
+import { Moon, Sparkles, Sun, Volume2, VolumeX } from "lucide-react";
+import { useRef, useSyncExternalStore } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { APPS, type AppId } from "@/data/apps";
 import { cn } from "@/lib/utils";
@@ -29,7 +29,7 @@ export function Taskbar() {
         aria-controls="start-menu"
         aria-haspopup="dialog"
         className={cn(
-          "font-pixel flex h-8 shrink-0 items-center gap-1.5 rounded-control px-3 text-fg transition-colors",
+          "font-pixel flex h-8 shrink-0 items-center gap-1.5 rounded-control px-3 text-on-pastel transition-colors",
           startMenuOpen
             ? "bg-signature-hover shadow-bevel-pressed"
             : "bg-signature shadow-bevel hover:bg-signature-hover",
@@ -42,6 +42,7 @@ export function Taskbar() {
       <TaskbarWindows />
 
       <div className="flex shrink-0 items-center gap-1 border-l-2 border-taskbar-hover pl-2">
+        <ThemeToggle />
         <SoundToggle />
         <div className="px-1.5">
           <Clock />
@@ -89,6 +90,36 @@ function TaskbarWindows() {
       })}
     </nav>
   );
+}
+
+/** Bascule rapide clair ↔ sombre (le choix « système » se fait dans les Paramètres). */
+function ThemeToggle() {
+  const setTheme = useSettingsStore((s) => s.setTheme);
+  // Thème réellement affiché (lu sur <html>) : gère aussi le choix « système ».
+  const isDark = useSyncExternalStore(
+    subscribeTheme,
+    () => document.documentElement.dataset.theme === "dark",
+    () => false,
+  );
+
+  return (
+    <button
+      type="button"
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      aria-label={isDark ? "Passer au thème clair" : "Passer au thème sombre"}
+      title={isDark ? "Strawberry Milk (clair)" : "Blueberry Night (sombre)"}
+      className="flex size-8 items-center justify-center rounded-control hover:bg-taskbar-hover"
+    >
+      {isDark ? <Sun className="size-4" aria-hidden /> : <Moon className="size-4" aria-hidden />}
+    </button>
+  );
+}
+
+/** Notifie quand l'attribut data-theme de <html> change. */
+function subscribeTheme(callback: () => void) {
+  const observer = new MutationObserver(callback);
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  return () => observer.disconnect();
 }
 
 function SoundToggle() {

@@ -31,11 +31,11 @@ export function SkillsApp() {
         {skillCategories.map((category) => (
           <section
             key={category.id}
-            className="overflow-hidden rounded-window border-2 border-window-border bg-white/60 shadow-pixel-sm"
+            className="overflow-hidden rounded-window border-2 border-window-border bg-card shadow-pixel-sm"
           >
             <h3
               className={cn(
-                "font-pixel title-stripes border-b-2 border-window-border px-3 py-1.5 text-sm",
+                "font-pixel title-stripes border-b-2 text-on-pastel border-window-border px-3 py-1.5 text-sm",
                 headerBg[category.color],
               )}
             >

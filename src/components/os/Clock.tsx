@@ -29,11 +29,16 @@ const getSnapshot = () => now;
 // Pas d'heure côté serveur : évite un écart d'hydratation.
 const getServerSnapshot = () => 0;
 
-export function Clock() {
+/** Date courante, mise à jour chaque minute ; null côté serveur et avant l'hydratation. */
+export function useNow(): Date | null {
   const timestamp = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-  if (!timestamp) return <span className="w-12" aria-hidden />;
+  return timestamp ? new Date(timestamp) : null;
+}
 
-  const date = new Date(timestamp);
+export function Clock() {
+  const date = useNow();
+  if (!date) return <span className="w-12" aria-hidden />;
+
   return (
     <time
       dateTime={date.toISOString()}

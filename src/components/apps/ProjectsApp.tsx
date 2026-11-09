@@ -38,7 +38,7 @@ export function ProjectsApp() {
         </PixelButton>
         <nav
           aria-label="Chemin"
-          className="font-pixel flex min-w-0 flex-1 items-center gap-1 rounded-control border-2 border-window-border bg-white/70 px-2 py-0.5 text-xs text-fg-muted"
+          className="font-pixel flex min-w-0 flex-1 items-center gap-1 rounded-control border-2 border-window-border bg-input px-2 py-0.5 text-xs text-fg-muted"
         >
           <FolderHeart className="size-3.5 shrink-0 fill-folder text-plum-700" aria-hidden />
           <button type="button" className="hover:text-fg hover:underline" onClick={() => setSelectedId(null)}>
@@ -71,7 +71,7 @@ function ProjectThumb({ project, className }: { project: Project; className?: st
       )}
     >
       {project.image ? (
-        <Image src={project.image} alt={`Capture de ${project.title}`} fill className="object-cover" sizes="(max-width: 768px) 100vw, 400px" />
+        <Image src={project.image} alt={`Capture de ${project.title}`} fill className="object-cover object-left-top" sizes="(max-width: 768px) 100vw, 400px" />
       ) : (
         <ImageIcon className="size-8 text-plum-500/60" aria-hidden />
       )}
@@ -87,7 +87,7 @@ function ProjectGrid({ onOpen }: { onOpen: (id: string) => void }) {
           <button
             type="button"
             onClick={() => onOpen(project.id)}
-            className="group flex h-full w-full flex-col overflow-hidden rounded-window border-2 border-window-border bg-white/60 text-left shadow-pixel-sm transition-transform hover:-translate-y-0.5 hover:shadow-pixel"
+            className="group flex h-full w-full flex-col overflow-hidden rounded-window border-2 border-window-border bg-card text-left shadow-pixel-sm transition-transform hover:-translate-y-0.5 hover:shadow-pixel"
           >
             <ProjectThumb project={project} className="h-24" />
             <div className="flex flex-1 flex-col gap-1.5 p-3">

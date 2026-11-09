@@ -4,21 +4,25 @@ import { useEffect, useState } from "react";
 import { toast, Toaster } from "sonner";
 import { WindowManager } from "@/components/window/WindowManager";
 import { DESKTOP_APPS, type AppId } from "@/data/apps";
-import { useSettingsStore } from "@/stores/settings-store";
+import { useDesktopStore } from "@/stores/desktop-store";
+import { BootScreen } from "./BootScreen";
 import { DesktopIcon } from "./DesktopIcon";
+import { DesktopWidgets } from "./DesktopWidgets";
+import { SystemErrorDialog } from "./SystemErrorDialog";
 import { Taskbar } from "./Taskbar";
+import { ThemeSync } from "./ThemeSync";
 import { Wallpaper } from "./Wallpaper";
 
 const WELCOME_TOAST_KEY = "emma-os:welcomed";
 
-/** Bureau d'Emma OS : fond, icônes, fenêtres, barre des tâches et notifications. */
+/** Bureau d'Emma OS : fond, icônes, widgets, fenêtres, barre des tâches et notifications. */
 export function Desktop() {
   const [selectedIcon, setSelectedIcon] = useState<AppId | null>(null);
+  const bootDone = useDesktopStore((s) => s.bootDone);
 
+  // Notification de bienvenue, une fois par session, après l'écran de démarrage.
   useEffect(() => {
-    useSettingsStore.persist.rehydrate();
-
-    // Notification de bienvenue, une fois par session.
+    if (!bootDone) return;
     let alreadyWelcomed = false;
     try {
       alreadyWelcomed = sessionStorage.getItem(WELCOME_TOAST_KEY) === "1";
@@ -32,13 +36,14 @@ export function Desktop() {
         toast("Bienvenue sur Emma OS ✨", {
           description: "Double-clique sur une icône ou ouvre le menu Start pour explorer.",
         }),
-      900,
+      700,
     );
     return () => clearTimeout(timer);
-  }, []);
+  }, [bootDone]);
 
   return (
     <main className="relative flex h-full flex-col">
+      <ThemeSync />
       <Wallpaper />
 
       {/* Zone du bureau ; `isolate` confine les z-index des fenêtres à cette zone. */}
@@ -62,10 +67,13 @@ export function Desktop() {
             />
           ))}
         </nav>
+        <DesktopWidgets />
         <WindowManager />
       </div>
 
       <Taskbar />
+      <SystemErrorDialog />
+      <BootScreen />
 
       <Toaster
         position="bottom-right"

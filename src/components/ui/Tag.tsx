@@ -17,15 +17,15 @@ export interface TagProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 const colors: Record<Color, string> = {
-  lavender: "bg-lavender-200 text-fg",
-  bubblegum: "bg-bubblegum-200 text-fg",
-  sky: "bg-sky-pastel-200 text-fg",
-  mint: "bg-mint-200 text-fg",
-  butter: "bg-butter-200 text-fg",
-  success: "bg-success text-fg",
-  warning: "bg-warning text-fg",
+  lavender: "bg-lavender-200 text-on-pastel",
+  bubblegum: "bg-bubblegum-200 text-on-pastel",
+  sky: "bg-sky-pastel-200 text-on-pastel",
+  mint: "bg-mint-200 text-on-pastel",
+  butter: "bg-butter-200 text-on-pastel",
+  success: "bg-success text-on-pastel",
+  warning: "bg-warning text-on-pastel",
   danger: "bg-danger text-white",
-  info: "bg-info text-fg",
+  info: "bg-info text-on-pastel",
 };
 
 /** Petite étiquette pixel (technos d'un projet, statut…). */

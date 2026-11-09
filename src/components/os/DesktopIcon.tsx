@@ -52,8 +52,9 @@ export function DesktopIcon({ app, selected, onSelect }: DesktopIconProps) {
       </span>
       <span
         className={cn(
-          "font-pixel rounded-sm px-1 text-center text-xs leading-tight",
-          selected ? "bg-accent text-accent-fg" : "text-fg [text-shadow:0_1px_0_rgb(255_255_255/0.7)]",
+          "font-pixel rounded-sm px-1 py-px text-center text-xs leading-tight",
+          // Pastille semi-opaque : lisible quel que soit le fond d'écran choisi.
+          selected ? "bg-accent text-accent-fg" : "bg-window/70 text-fg backdrop-blur-[2px]",
         )}
       >
         {app.title}

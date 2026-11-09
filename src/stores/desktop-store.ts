@@ -39,6 +39,22 @@ interface DesktopState {
   updatePosition: (id: AppId, position: Point) => void;
   updateBounds: (id: AppId, position: Point, size: Size) => void;
   setViewport: (viewport: Size) => void;
+  /** Ferme toutes les fenêtres, oublie la disposition et rouvre la bienvenue. */
+  resetLayout: () => void;
+
+  /** Écran de démarrage terminé (non sauvegardé). */
+  bootDone: boolean;
+  setBootDone: (done: boolean) => void;
+
+  /** Fausse boîte de dialogue « erreur système » (easter egg). */
+  systemError: SystemError | null;
+  showSystemError: (error: SystemError) => void;
+  hideSystemError: () => void;
+}
+
+export interface SystemError {
+  title: string;
+  message: string;
 }
 
 const CASCADE_START: Point = { x: 96, y: 40 };
@@ -179,6 +195,18 @@ export const useDesktopStore = create<DesktopState>()(
             }
             return { viewport, windows };
           }),
+
+        resetLayout: () => {
+          set({ windows: {}, activeId: null, topZ: 10, startMenuOpen: false });
+          get().open("welcome");
+        },
+
+        bootDone: false,
+        setBootDone: (bootDone) => set({ bootDone }),
+
+        systemError: null,
+        showSystemError: (systemError) => set({ systemError, startMenuOpen: false }),
+        hideSystemError: () => set({ systemError: null }),
       };
     },
     {

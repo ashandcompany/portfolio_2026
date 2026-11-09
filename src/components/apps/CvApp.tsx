@@ -38,8 +38,8 @@ export function CvApp() {
       </div>
 
       {/* « Page » du document */}
-      <div className="flex-1 bg-lavender-200/60 p-3 @md:p-6">
-        <article className="mx-auto max-w-3xl space-y-5 rounded-control bg-white p-5 text-sm shadow-pixel @md:p-8">
+      <div className="flex-1 bg-surface p-3 @md:p-6">
+        <article className="mx-auto max-w-3xl space-y-5 rounded-control bg-window p-5 text-sm shadow-pixel @md:p-8">
           <header className="flex flex-col gap-4 border-b-2 border-bubblegum-300 pb-4 @sm:flex-row @sm:items-center">
             <Avatar size="lg" />
             <div className="space-y-1">
@@ -166,7 +166,7 @@ export function CvApp() {
 function CvSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="space-y-2">
-      <h3 className="font-pixel rounded-control bg-bubblegum-200 px-2 py-0.5 text-sm tracking-[0.2em] uppercase">
+      <h3 className="font-pixel rounded-control bg-bubblegum-200 px-2 py-0.5 text-on-pastel text-sm tracking-[0.2em] uppercase">
         {title}
       </h3>
       {children}

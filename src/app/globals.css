@@ -74,6 +74,11 @@
   --color-surface-hover: var(--color-lavender-100);
   --color-control-border: var(--color-plum-500);
   --color-folder: var(--color-butter-300);
+  /* Cartes posées dans une fenêtre, champs de saisie */
+  --color-card: rgb(255 255 255 / 0.6);
+  --color-input: #ffffff;
+  /* Texte sur fond pastel (étiquettes, boutons roses…) : sombre dans les deux thèmes */
+  --color-on-pastel: var(--color-plum-900);
 
   /* États */
   --color-success: var(--color-mint-300);
@@ -146,6 +151,91 @@
     outline: 2px dashed var(--color-bubblegum-500);
     outline-offset: 2px;
   }
+
+  /* ── Thème sombre « Blueberry Night » ──
+   * Activé par data-theme="dark" sur <html> (posé avant l'affichage par le
+   * script du layout). Seuls les tokens sémantiques changent. */
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --color-desktop: #1d1530;
+    --color-taskbar: #120c1f;
+    --color-taskbar-fg: var(--color-lavender-100);
+    --color-taskbar-hover: #2f2448;
+
+    --color-window: #251c3a;
+    --color-window-border: #5b4a85;
+    --color-titlebar: #2f2448;
+    --color-titlebar-active: #3f3163;
+
+    --color-fg: #f3ecff;
+    --color-fg-muted: #c4b5e0;
+    --color-fg-subtle: #8a79ad;
+
+    --color-accent: var(--color-lavender-400);
+    --color-accent-hover: var(--color-lavender-300);
+    --color-signature: var(--color-bubblegum-400);
+    --color-signature-hover: var(--color-bubblegum-300);
+    --color-surface: #2f2448;
+    --color-surface-hover: #3f3163;
+    --color-control-border: #8a79ad;
+    --color-card: rgb(255 255 255 / 0.05);
+    --color-input: #1d1530;
+
+    --shadow-pixel-sm: 2px 2px 0 0 rgb(0 0 0 / 0.35);
+    --shadow-pixel: 4px 4px 0 0 rgb(0 0 0 / 0.3);
+    --shadow-window: 4px 4px 0 0 rgb(0 0 0 / 0.35), 0 12px 32px -12px rgb(154 127 217 / 0.35);
+    --shadow-bevel: inset 0 -2px 0 0 rgb(0 0 0 / 0.25), inset 0 2px 0 0 rgb(255 255 255 / 0.12);
+    --shadow-bevel-pressed: inset 0 2px 0 0 rgb(0 0 0 / 0.25);
+    /* Rayures des barres de titre, discrètes sur fond sombre */
+    --title-stripe: rgb(255 255 255 / 0.06);
+  }
+}
+
+/* ───────────────────────── Fonds d'écran ─────────────────────────
+ * Choisi par data-wallpaper sur <html> : auto (suit le thème), pastel, night, sunset. */
+@layer components {
+  :root {
+    --wp-pastel:
+      radial-gradient(ellipse at 20% 10%, #fdd0e4 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 80%, #bcd8f5 0%, transparent 55%),
+      linear-gradient(160deg, #ddd0fb 0%, #c9b6f2 45%, #bcd8f5 100%);
+    --wp-night:
+      radial-gradient(ellipse at 80% 15%, rgb(241 147 189 / 0.35) 0%, transparent 45%),
+      radial-gradient(ellipse at 15% 85%, rgb(149 192 238 / 0.3) 0%, transparent 50%),
+      linear-gradient(160deg, #2e1f42 0%, #241a3d 50%, #1b2a4a 100%);
+    --wp-sunset:
+      radial-gradient(ellipse at 50% 100%, #ffe08f 0%, transparent 45%),
+      radial-gradient(ellipse at 15% 15%, #ddd0fb 0%, transparent 50%),
+      linear-gradient(180deg, #c9b6f2 0%, #f7b8d2 55%, #ffd6b8 100%);
+    --wp-current: var(--wp-pastel);
+    --wp-cloud-opacity: 1;
+  }
+  :root[data-theme="dark"] {
+    --wp-current: var(--wp-night);
+    --wp-cloud-opacity: 0.25;
+  }
+  :root[data-wallpaper="pastel"] {
+    --wp-current: var(--wp-pastel);
+  }
+  :root[data-wallpaper="night"] {
+    --wp-current: var(--wp-night);
+  }
+  :root[data-wallpaper="sunset"] {
+    --wp-current: var(--wp-sunset);
+  }
+
+  .wallpaper {
+    background: var(--wp-current);
+  }
+  .wallpaper-cloud {
+    opacity: var(--wp-cloud-opacity);
+  }
+}
+
+/* Démarrage déjà vu (attribut posé par le script du layout) : pas de flash de l'écran de boot.
+ * Hors couche (@layer) exprès : doit l'emporter sur l'utilitaire `flex` de l'overlay. */
+:root[data-booted] #boot-screen {
+  display: none;
 }
 
 /* ───────────────────────── Utilitaires ───────────────────────── */
@@ -164,7 +254,7 @@
   background-image: repeating-linear-gradient(
     0deg,
     transparent 0 3px,
-    rgb(255 255 255 / 0.45) 3px 4px
+    var(--title-stripe, rgb(255 255 255 / 0.45)) 3px 4px
   );
 }
 

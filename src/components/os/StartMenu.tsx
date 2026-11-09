@@ -1,9 +1,8 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { Power, Search } from "lucide-react";
+import { Power, Search, Settings } from "lucide-react";
 import { useEffect, useRef, useState, type RefObject } from "react";
-import { toast } from "sonner";
 import { searchApps } from "@/data/apps";
 import { profile } from "@/data/profile";
 import { cn } from "@/lib/utils";
@@ -43,6 +42,7 @@ export function StartMenu({ anchorRef }: StartMenuProps) {
 function StartMenuPanel({ anchorRef }: StartMenuProps) {
   const open = useDesktopStore((s) => s.open);
   const setStartMenuOpen = useDesktopStore((s) => s.setStartMenuOpen);
+  const showSystemError = useDesktopStore((s) => s.showSystemError);
   const [query, setQuery] = useState("");
   const panelRef = useRef<HTMLDivElement>(null);
   const results = searchApps(query);
@@ -98,7 +98,7 @@ function StartMenuPanel({ anchorRef }: StartMenuProps) {
           if (results[0]) open(results[0].id);
         }}
       >
-        <label className="flex h-9 items-center gap-2 rounded-control border-2 border-control-border bg-surface px-2 focus-within:border-bubblegum-500 focus-within:bg-white">
+        <label className="flex h-9 items-center gap-2 rounded-control border-2 border-control-border bg-surface px-2 focus-within:border-bubblegum-500 focus-within:bg-input">
           <Search className="size-4 shrink-0 text-fg-muted" aria-hidden />
           <input
             autoFocus
@@ -142,15 +142,24 @@ function StartMenuPanel({ anchorRef }: StartMenuProps) {
       </ul>
 
       {/* Pied */}
-      <div className="flex justify-end border-t-2 border-window-border bg-titlebar p-2">
+      <div className="flex justify-between border-t-2 border-window-border bg-titlebar p-2">
         <button
           type="button"
-          onClick={() => {
-            setStartMenuOpen(false);
-            toast("Impossible d'éteindre", {
-              description: "Emma OS refuse de s'arrêter : il reste trop de projets à te montrer ✨",
-            });
-          }}
+          onClick={() => open("settings")}
+          className="font-pixel flex items-center gap-1.5 rounded-control px-2 py-1 text-sm text-fg-muted hover:bg-surface-hover hover:text-fg"
+        >
+          <Settings className="size-4" aria-hidden />
+          Paramètres
+        </button>
+        <button
+          type="button"
+          onClick={() =>
+            showSystemError({
+              title: "Erreur système",
+              message:
+                "Emma OS ne peut pas s'éteindre : il reste trop de projets à te montrer. Réessaie après avoir lu mon CV ✨",
+            })
+          }
           className="font-pixel flex items-center gap-1.5 rounded-control px-2 py-1 text-sm text-fg-muted hover:bg-surface-hover hover:text-fg"
         >
           <Power className="size-4" aria-hidden />

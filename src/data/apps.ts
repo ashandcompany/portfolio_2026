@@ -5,6 +5,7 @@ import {
   GraduationCap,
   Heart,
   Mail,
+  Settings,
   SquareCode,
   Trash2,
   UserRound,
@@ -26,6 +27,7 @@ export type AppId =
   | "skills"
   | "cv"
   | "contact"
+  | "settings"
   | "trash";
 
 export interface Size {
@@ -147,6 +149,18 @@ export const APPS: Record<AppId, AppMeta> = {
     onDesktop: true,
     defaultSize: { width: 480, height: 400 },
     minSize: { width: 320, height: 260 },
+  },
+  settings: {
+    id: "settings",
+    title: "Paramètres",
+    fileName: "parametres.cpl",
+    description: "Thème, fond d'écran, sons",
+    keywords: ["settings", "réglages", "thème", "sombre", "dark", "fond d'écran", "wallpaper", "son"],
+    icon: Settings,
+    iconClassName: "fill-lavender-200 text-plum-700",
+    onDesktop: false,
+    defaultSize: { width: 460, height: 520 },
+    minSize: { width: 320, height: 300 },
   },
   trash: {
     id: "trash",

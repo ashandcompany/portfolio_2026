@@ -23,9 +23,32 @@ export const viewport: Viewport = {
   themeColor: "#c9b6f2",
 };
 
+/**
+ * Exécuté avant le premier affichage : applique le thème, le fond d'écran et
+ * l'état « démarrage déjà vu » sauvegardés, pour éviter tout flash.
+ * Clés : voir stores/settings-store.ts (SETTINGS_STORAGE_KEY, BOOT_SEEN_KEY).
+ */
+const bootstrapScript = `(function(){try{
+var d=document.documentElement,ls=window.localStorage;
+var s=(JSON.parse(ls.getItem("emma-os:settings")||"{}").state)||{};
+var t=s.theme||"light";
+if(t==="system")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";
+d.dataset.theme=t;
+d.dataset.wallpaper=s.wallpaper||"auto";
+if(ls.getItem("emma-os:boot-seen"))d.dataset.booted="";
+}catch(e){}})();`;
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="fr" className={`${pixelify.variable} ${nunito.variable} h-full antialiased`}>
+    <html
+      lang="fr"
+      className={`${pixelify.variable} ${nunito.variable} h-full antialiased`}
+      // Les attributs data-* sont posés par le script avant l'hydratation.
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: bootstrapScript }} />
+      </head>
       <body className="h-full overflow-hidden">{children}</body>
     </html>
   );

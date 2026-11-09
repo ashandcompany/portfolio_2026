@@ -13,7 +13,7 @@ export function Avatar({ size = "sm", className }: { size?: keyof typeof sizes; 
   return (
     <div
       className={cn(
-        "font-pixel flex shrink-0 items-center justify-center overflow-hidden rounded-window border-2 border-control-border bg-signature text-fg shadow-pixel-sm",
+        "font-pixel flex shrink-0 items-center justify-center overflow-hidden rounded-window border-2 border-control-border bg-signature text-on-pastel shadow-pixel-sm",
         box,
         className,
       )}

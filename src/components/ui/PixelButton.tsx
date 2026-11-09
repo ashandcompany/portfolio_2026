@@ -1,4 +1,4 @@
-import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from "react";
+import type { AnchorHTMLAttributes, ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 
 type Variant = "default" | "primary" | "signature" | "danger" | "ghost";
@@ -10,7 +10,7 @@ const variants: Record<Variant, string> = {
   primary:
     "bg-accent text-accent-fg border-control-border shadow-bevel hover:bg-accent-hover active:shadow-bevel-pressed",
   signature:
-    "bg-signature text-fg border-control-border shadow-bevel hover:bg-signature-hover active:shadow-bevel-pressed",
+    "bg-signature text-on-pastel border-control-border shadow-bevel hover:bg-signature-hover active:shadow-bevel-pressed",
   danger:
     "bg-danger text-white border-plum-700 shadow-bevel hover:brightness-110 active:shadow-bevel-pressed",
   ghost: "bg-transparent text-fg border-transparent hover:bg-surface-hover",
@@ -37,7 +37,8 @@ export function pixelButtonClasses({ variant = "default", size = "md" }: StylePr
   );
 }
 
-export interface PixelButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, StyleProps {}
+/** `ComponentProps<"button">` inclut `ref` (React 19 : ref est une prop comme une autre). */
+export interface PixelButtonProps extends ComponentProps<"button">, StyleProps {}
 
 /** Bouton rétro adouci : police pixel, relief léger, petit arrondi. */
 export function PixelButton({ variant, size, className, type = "button", ...props }: PixelButtonProps) {

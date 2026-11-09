@@ -46,6 +46,7 @@ export const projects: Project[] = [
     year: "2026",
     context: "Projet personnel",
     color: "lavender",
+    image: "/projects/emma-os.png",
     links: { github: "https://github.com/TODO" }, // TODO: lien du dépôt
   },
   {

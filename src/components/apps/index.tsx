@@ -5,14 +5,11 @@ import { ContactApp } from "./ContactApp";
 import { CvApp } from "./CvApp";
 import { EducationApp } from "./EducationApp";
 import { ExperienceApp } from "./ExperienceApp";
-import { PlaceholderApp } from "./PlaceholderApp";
 import { ProjectsApp } from "./ProjectsApp";
+import { SettingsApp } from "./SettingsApp";
 import { SkillsApp } from "./SkillsApp";
+import { TrashApp } from "./TrashApp";
 import { WelcomeApp } from "./WelcomeApp";
-
-function TrashApp() {
-  return <PlaceholderApp title="Corbeille" />; // easter egg au lot 5
-}
 
 /** Association app → composant affiché dans sa fenêtre. */
 export const APP_COMPONENTS: Record<AppId, ComponentType> = {
@@ -24,5 +21,6 @@ export const APP_COMPONENTS: Record<AppId, ComponentType> = {
   skills: SkillsApp,
   cv: CvApp,
   contact: ContactApp,
+  settings: SettingsApp,
   trash: TrashApp,
 };

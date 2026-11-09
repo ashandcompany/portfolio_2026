@@ -48,7 +48,7 @@ function PixelCloud({ className, scale = 6 }: { className?: string; scale?: numb
       viewBox="0 0 16 7"
       shapeRendering="crispEdges"
       aria-hidden
-      className={cn("pixelated", className)}
+      className={cn("pixelated wallpaper-cloud", className)}
     >
       <path
         fill="#ffffff"
@@ -66,8 +66,8 @@ export function Wallpaper({ className }: { className?: string }) {
     <div
       aria-hidden
       className={cn(
-        "pointer-events-none absolute inset-0 overflow-hidden",
-        "bg-[radial-gradient(ellipse_at_20%_10%,#fdd0e4_0%,transparent_50%),radial-gradient(ellipse_at_85%_80%,#bcd8f5_0%,transparent_55%),linear-gradient(160deg,#ddd0fb_0%,#c9b6f2_45%,#bcd8f5_100%)]",
+        // `.wallpaper` : dégradé choisi via data-wallpaper / data-theme (globals.css)
+        "wallpaper pointer-events-none absolute inset-0 overflow-hidden transition-[background] duration-500",
         className,
       )}
     >

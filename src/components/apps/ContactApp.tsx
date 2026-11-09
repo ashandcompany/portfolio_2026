@@ -34,7 +34,7 @@ export function ContactApp() {
   return (
     <div className="@container space-y-5 p-5">
       {/* En-tête façon nouveau message */}
-      <div className="overflow-hidden rounded-window border-2 border-window-border bg-white/60 text-sm">
+      <div className="overflow-hidden rounded-window border-2 border-window-border bg-card text-sm">
         <dl className="grid grid-cols-[auto_1fr] items-center gap-x-3 border-b-2 border-window-border bg-titlebar px-3">
           <dt className="font-pixel py-2 text-xs whitespace-nowrap text-fg-muted">À</dt>
           <dd className="flex min-w-0 items-center gap-2 py-1.5">
