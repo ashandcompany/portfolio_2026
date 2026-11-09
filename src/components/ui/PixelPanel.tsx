@@ -1,5 +1,6 @@
 import type { HTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { TitleBar } from "./TitleBar";
 
 export interface PixelPanelProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
   /** Titre affiché dans la barre ; sans titre, le panneau n'a pas de barre. */
@@ -31,25 +32,7 @@ export function PixelPanel({
       )}
       {...props}
     >
-      {title !== undefined && (
-        <div
-          className={cn(
-            "title-stripes flex h-8 shrink-0 items-center gap-2 border-b-2 border-window-border px-2",
-            active ? "bg-titlebar-active" : "bg-titlebar",
-          )}
-        >
-          {icon && <span className="flex size-4 items-center justify-center">{icon}</span>}
-          <span
-            className={cn(
-              "font-pixel truncate text-sm font-semibold",
-              active ? "text-fg" : "text-fg-muted",
-            )}
-          >
-            {title}
-          </span>
-          {actions && <div className="ml-auto flex items-center gap-1">{actions}</div>}
-        </div>
-      )}
+      {title !== undefined && <TitleBar title={title} icon={icon} active={active} actions={actions} />}
       <div className={cn("flex-1 p-4", bodyClassName)}>{children}</div>
     </div>
   );
