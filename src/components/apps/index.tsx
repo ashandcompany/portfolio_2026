@@ -1,23 +1,28 @@
 import type { ComponentType } from "react";
 import type { AppId } from "@/data/apps";
+import { AboutApp } from "./AboutApp";
+import { ContactApp } from "./ContactApp";
+import { CvApp } from "./CvApp";
+import { EducationApp } from "./EducationApp";
+import { ExperienceApp } from "./ExperienceApp";
 import { PlaceholderApp } from "./PlaceholderApp";
+import { ProjectsApp } from "./ProjectsApp";
+import { SkillsApp } from "./SkillsApp";
 import { WelcomeApp } from "./WelcomeApp";
 
-const placeholder = (title: string) => {
-  const Placeholder = () => <PlaceholderApp title={title} />;
-  Placeholder.displayName = `Placeholder(${title})`;
-  return Placeholder;
-};
+function TrashApp() {
+  return <PlaceholderApp title="Corbeille" />; // easter egg au lot 5
+}
 
-/** Association app → composant affiché dans sa fenêtre (vraies apps au lot 4). */
+/** Association app → composant affiché dans sa fenêtre. */
 export const APP_COMPONENTS: Record<AppId, ComponentType> = {
   welcome: WelcomeApp,
-  about: placeholder("About Me"),
-  projects: placeholder("Projects"),
-  experience: placeholder("Experience"),
-  education: placeholder("Education"),
-  skills: placeholder("Skills"),
-  cv: placeholder("My CV"),
-  contact: placeholder("Contact"),
-  trash: placeholder("Corbeille"),
+  about: AboutApp,
+  projects: ProjectsApp,
+  experience: ExperienceApp,
+  education: EducationApp,
+  skills: SkillsApp,
+  cv: CvApp,
+  contact: ContactApp,
+  trash: TrashApp,
 };

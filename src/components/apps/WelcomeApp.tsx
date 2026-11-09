@@ -1,6 +1,7 @@
 "use client";
 
 import { Sparkles } from "lucide-react";
+import { profile } from "@/data/profile";
 import { PixelButton } from "@/components/ui/PixelButton";
 import { Tag } from "@/components/ui/Tag";
 import { useDesktopStore } from "@/stores/desktop-store";
@@ -15,15 +16,16 @@ export function WelcomeApp() {
         <Sparkles className="size-6 text-bubblegum-500" aria-hidden />
       </h1>
       <p className="leading-relaxed text-fg-muted">
-        Bonjour ! Je suis Emma, développeuse Fullstack. Bienvenue sur mon bureau : déplace les
-        fenêtres, redimensionne-les, et double-clique sur les icônes pour découvrir mon parcours ✨
+        Bonjour ! Je suis <strong className="text-fg">{profile.firstName}</strong>,{" "}
+        {profile.role.toLowerCase()} en alternance chez Ampère (Renault). Bienvenue sur mon bureau :
+        double-clique sur les icônes pour découvrir mon parcours ✨
       </p>
       <div className="flex flex-wrap gap-2">
-        <Tag color="lavender">Next.js</Tag>
-        <Tag color="bubblegum">React</Tag>
-        <Tag color="sky">TypeScript</Tag>
-        <Tag color="mint">Node.js</Tag>
-        <Tag color="butter">Tailwind</Tag>
+        <Tag color="lavender">React / Next.js</Tag>
+        <Tag color="bubblegum">TypeScript</Tag>
+        <Tag color="sky">PHP</Tag>
+        <Tag color="mint">Docker</Tag>
+        <Tag color="butter">MySQL</Tag>
       </div>
       <div className="flex flex-wrap justify-end gap-2 pt-2">
         <PixelButton onClick={() => open("about")}>À propos</PixelButton>

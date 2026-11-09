@@ -5,7 +5,9 @@ import { Power, Search } from "lucide-react";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { toast } from "sonner";
 import { searchApps } from "@/data/apps";
+import { profile } from "@/data/profile";
 import { cn } from "@/lib/utils";
+import { Avatar } from "@/components/ui/Avatar";
 import { useDesktopStore } from "@/stores/desktop-store";
 
 interface StartMenuProps {
@@ -75,15 +77,10 @@ function StartMenuPanel({ anchorRef }: StartMenuProps) {
     >
       {/* Profil */}
       <div className="title-stripes flex items-center gap-3 border-b-2 border-window-border bg-titlebar-active p-3">
-        <div
-          aria-hidden
-          className="font-pixel flex size-11 shrink-0 items-center justify-center rounded-control border-2 border-control-border bg-signature text-xl shadow-pixel-sm"
-        >
-          E
-        </div>
+        <Avatar />
         <div className="min-w-0">
-          <p className="font-pixel text-lg leading-tight">Emma</p>
-          <p className="truncate text-xs text-fg-muted">Développeuse Fullstack</p>
+          <p className="font-pixel text-lg leading-tight">{profile.fullName}</p>
+          <p className="truncate text-xs text-fg-muted">{profile.role}</p>
           <p className="font-pixel flex items-center gap-1 text-xs text-fg-muted">
             <span className="size-2 rounded-full bg-success ring-1 ring-plum-500" aria-hidden />
             Online

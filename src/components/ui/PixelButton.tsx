@@ -1,13 +1,8 @@
-import type { ButtonHTMLAttributes } from "react";
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 type Variant = "default" | "primary" | "signature" | "danger" | "ghost";
 type Size = "sm" | "md" | "icon";
-
-export interface PixelButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: Variant;
-  size?: Size;
-}
 
 const variants: Record<Variant, string> = {
   default:
@@ -27,24 +22,38 @@ const sizes: Record<Size, string> = {
   icon: "size-6 p-0",
 };
 
+interface StyleProps {
+  variant?: Variant;
+  size?: Size;
+}
+
+/** Classes du bouton rétro adouci (réutilisables sur un lien). */
+export function pixelButtonClasses({ variant = "default", size = "md" }: StyleProps = {}) {
+  return cn(
+    "font-pixel inline-flex select-none items-center justify-center gap-1.5 rounded-control border-2 whitespace-nowrap",
+    "transition-colors active:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50",
+    variants[variant],
+    sizes[size],
+  );
+}
+
+export interface PixelButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, StyleProps {}
+
 /** Bouton rétro adouci : police pixel, relief léger, petit arrondi. */
-export function PixelButton({
-  variant = "default",
-  size = "md",
-  className,
-  type = "button",
-  ...props
-}: PixelButtonProps) {
+export function PixelButton({ variant, size, className, type = "button", ...props }: PixelButtonProps) {
+  return <button type={type} className={cn(pixelButtonClasses({ variant, size }), className)} {...props} />;
+}
+
+export interface PixelLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement>, StyleProps {}
+
+/** Lien avec l'apparence d'un PixelButton. Les liens externes s'ouvrent dans un nouvel onglet. */
+export function PixelLink({ variant, size, className, href, ...props }: PixelLinkProps) {
+  const external = href?.startsWith("http");
   return (
-    <button
-      type={type}
-      className={cn(
-        "font-pixel inline-flex select-none items-center justify-center gap-1.5 rounded-control border-2",
-        "transition-colors active:translate-y-px disabled:pointer-events-none disabled:opacity-50",
-        variants[variant],
-        sizes[size],
-        className,
-      )}
+    <a
+      href={href}
+      className={cn(pixelButtonClasses({ variant, size }), className)}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       {...props}
     />
   );
