@@ -14,10 +14,10 @@ export const profile = {
   headline: "Développeuse web fullstack",
   photo: "/profile_picture.jpg",
   location: "Rouen",
-  status: "En alternance chez Ampère (Renault)",
+  status: "En alternance chez Renault Group",
   availability: "À la recherche d'un poste de développeuse web",
   bio: [
-    "Étudiante en Mastère « Manager de l'ingénierie numérique » à la **Normandie Web School** et actuellement en **alternance chez Renault (Ampère)** comme pilote de mission digitale / full stack.",
+    "Étudiante en Mastère \"Manager de l'ingénierie numérique\" à la **Normandie Web School** et actuellement en **alternance chez Renault Group** comme pilote de mission digitale / full stack.",
     "Je recherche aujourd'hui un **poste de développeuse web** pour mettre mes compétences fullstack au service de projets concrets, et continuer à progresser en **ingénierie logicielle**.",
   ],
   email: "emma.roizot@orange.fr",

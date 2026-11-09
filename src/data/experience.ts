@@ -13,9 +13,9 @@ export interface Experience {
 
 export const experiences: Experience[] = [
   {
-    id: "ampere",
+    id: "renault",
     role: "Pilote de mission digitale / Full Stack",
-    company: "Ampère — Groupe Renault",
+    company: "Renault Group",
     place: "Usine de Cléon",
     contract: "Alternance",
     start: "Septembre 2024",

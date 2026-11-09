@@ -13,7 +13,7 @@ export const education: Education[] = [
   {
     id: "nws",
     school: "Normandie Web School",
-    degree: "Mastère « Manager de l'ingénierie numérique »",
+    degree: "Mastère \"Manager de l'ingénierie numérique\"",
     place: "Rouen", // TODO: vérifier la ville du campus
     start: "Septembre 2025",
     end: "Août 2027",

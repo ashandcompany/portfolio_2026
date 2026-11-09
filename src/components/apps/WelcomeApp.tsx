@@ -17,7 +17,7 @@ export function WelcomeApp() {
       </h1>
       <p className="leading-relaxed text-fg-muted">
         Bonjour ! Je suis <strong className="text-fg">{profile.firstName}</strong>,{" "}
-        {profile.role.toLowerCase()} en alternance chez Ampère (Renault). Bienvenue sur mon bureau :
+        {profile.role.toLowerCase()} en alternance chez Renault Group. Bienvenue sur mon bureau :
         double-clique sur les icônes pour découvrir mon parcours ✨
       </p>
       <div className="flex flex-wrap gap-2">
