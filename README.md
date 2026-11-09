@@ -44,6 +44,7 @@ npm run dev      # http://localhost:3000
 | `npm run build` | Build de production |
 | `npm run start` | Sert le build de production |
 | `npm run lint` | ESLint |
+| `npm run typecheck` | Vérification des types TypeScript |
 
 ## Modifier le contenu
 
@@ -83,6 +84,21 @@ Quelques choix :
 - **Thèmes** : les composants utilisent des couleurs nommées par rôle (`bg-window`, `text-fg`, `bg-accent`…) définies dans `globals.css`. Le thème sombre ne fait que les redéfinir sous `:root[data-theme="dark"]`.
 - **Pas de flash au chargement** : un petit script dans `layout.tsx` lit les réglages sauvegardés et pose `data-theme`, `data-wallpaper` et `data-booted` sur `<html>` avant le premier affichage. Les stores sont ensuite réhydratés côté client (`skipHydration`), ce qui évite les écarts d'hydratation.
 - **Données sauvegardées** dans le navigateur : `emma-os:desktop` (disposition des fenêtres), `emma-os:settings` (réglages), `emma-os:boot-seen` (démarrage déjà vu). Pour repartir de zéro, vide le `localStorage` du site ou utilise Paramètres → « Réinitialiser les fenêtres ».
+
+## Workflow
+
+`main` est la branche de production : tout ce qui y arrive est mis en ligne automatiquement. Le reste passe par une branche et une pull request.
+
+1. **Créer une branche** depuis `main` : `git switch -c feat/ma-modif`.
+2. **Pousser la branche et ouvrir une pull request.** Deux choses se lancent :
+   - **Vercel** crée un déploiement **Preview** et poste son URL dans la PR. L'URL de branche suit toujours le dernier commit ; chaque commit a aussi sa propre URL figée.
+   - **GitHub Actions** ([`ci.yml`](.github/workflows/ci.yml)) vérifie le lint, les types et le build.
+3. **Tester sur la preview.** Un badge **PREVIEW** (avec le nom de la branche) s'affiche dans la barre des tâches pour ne pas confondre avec le site en ligne. En local, le badge indique **LOCAL**.
+4. **Fusionner dans `main`** une fois la CI verte : Vercel déploie en production, et le badge disparaît.
+
+Hors production (previews et local), toutes les pages renvoient l'en-tête `X-Robots-Tag: noindex, nofollow` (défini dans [`next.config.ts`](next.config.ts)), pour qu'aucun moteur de recherche n'indexe une version de test, même servie depuis un domaine personnalisé. Les previews sont aussi protégées par défaut par une connexion Vercel : pour en montrer une à quelqu'un, utiliser un *Shareable Link* (Settings → Deployment Protection).
+
+Les réglages sauvegardés dans le navigateur (fenêtres, thème) dépendent du domaine : une preview ne mélange jamais ses données avec celles du site en ligne.
 
 ## Déploiement
 

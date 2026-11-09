@@ -9,6 +9,7 @@ import { AppIcon } from "@/components/ui/AppIcon";
 import { useDesktopStore } from "@/stores/desktop-store";
 import { useSettingsStore } from "@/stores/settings-store";
 import { Clock } from "./Clock";
+import { DeployBadge } from "./DeployBadge";
 import { StartMenu } from "./StartMenu";
 
 /** Barre des tâches : bouton Start, fenêtres ouvertes, zone système (son, heure). */
@@ -40,6 +41,8 @@ export function Taskbar() {
       </button>
 
       <TaskbarWindows />
+
+      <DeployBadge />
 
       <div className="flex shrink-0 items-center gap-1 border-l-2 border-taskbar-hover pl-2">
         <ThemeToggle />
