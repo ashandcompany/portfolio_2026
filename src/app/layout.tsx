@@ -1,4 +1,5 @@
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
 import { Nunito, Pixelify_Sans } from "next/font/google";
 import { profile } from "@/data/profile";
@@ -69,6 +70,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="h-full overflow-hidden">
         {children}
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
